@@ -93,6 +93,11 @@ public class Employee {
 	public void setPlants(List<Plant> plants) {
 		this.plants = plants;
 	}
+	
+	public void createDumpster(long dumpsterId, int PC, String city, String address, String type) {
+		Dumpster dumpster = new Dumpster(dumpsterId, PC, city, address, type);
+		this.dumpsters.add(dumpster);
+	}
 
 	@Override
 	public int hashCode() {
