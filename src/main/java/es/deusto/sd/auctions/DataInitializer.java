@@ -5,8 +5,10 @@
  */
 package es.deusto.sd.auctions;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +16,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import es.deusto.sd.auctions.entity.Article;
-import es.deusto.sd.auctions.entity.Category;
-import es.deusto.sd.auctions.entity.User;
+import es.deusto.sd.auctions.entity.Dumpster;
+import es.deusto.sd.auctions.entity.Employee;
+import es.deusto.sd.auctions.entity.Plant;
 import es.deusto.sd.auctions.service.AuctionsService;
 import es.deusto.sd.auctions.service.AuthService;
+import es.deusto.sd.auctions.service.DumpsterService;
+import es.deusto.sd.auctions.service.PlantService;
 
 @Configuration
 public class DataInitializer {
@@ -26,37 +30,77 @@ public class DataInitializer {
 	private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
 	
     @Bean
-    CommandLineRunner initData(AuctionsService auctionsService, AuthService authService) {
-		return args -> {			
-			// Create some users
-			User batman = new User("BruceWayne", "batman@dc.com", "Batm@n123!");
-			User spiderman = new User("PeterParker", "spiderman@marvel.com", "Sp!derM4n2023");
-			User superman = new User("ClarkKent", "superman@dc.com", "Sup3rm@n456!");
-			User wonderWoman = new User("DianaPrince", "wonderwoman@dc.com", "Wond3rW0m@n!789");
-			User captainMarvel = new User("CarolDanvers", "captainmarvel@marvel.com", "C@ptMarv3l#987");
-			User blackWidow = new User("NatashaRomanoff", "blackwidow@marvel.com", "Bl@ckWid0w2023");
-
-			authService.addUser(batman);
-			authService.addUser(spiderman);
-			authService.addUser(superman);
-			authService.addUser(wonderWoman);
-			authService.addUser(captainMarvel);
-			authService.addUser(blackWidow);			
+    CommandLineRunner initData(PlantService plantService, DumpsterService dumpsterService,AuthService AuthService) {
+		return args -> {	
 			
-			logger.info("Users saved!");
+			//create 2 plants
+			Plant p1 = new Plant(1L, 28001, "Bilbao", "Calle Gran Vía 45", 300);
+			Plant p2 = new Plant(2L, 8001, "Pamplona", "Avenida Carlos III 120", 400);
 			
-			// Create some categories
-			Category electronics = new Category("Electronics");
-			Category sports = new Category("Sporting Goods");
-			Category motors = new Category("Motors");
+			plantService.addPlant(p1);
+			plantService.addPlant(p2);
+		
+
+			logger.info("Plants saved!");
+
+			//Create 5 dumpsters
+			Dumpster d1 = new Dumpster(1L, 28001, "Bilbao", "Calle Gran Vía 120", "Organic");
+			Dumpster d2 = new Dumpster(2L, 28001, "Bilbao", "Calle Gran Vía 120", "Plastic");
+			Dumpster d3 = new Dumpster(3L, 28001, "Bilbao", "Calle Gran Vía 120", "Glass");
+			Dumpster d4 = new Dumpster(4L, 8001, "Pamplona", "Avenida Carlos III 45", "Paper");
+			Dumpster d5 = new Dumpster(5L, 8001, "Pamplona", "Avenida Carlos III 45", "Metal");
+
 			
-			auctionsService.addCategory(electronics);
-			auctionsService.addCategory(sports);
-			auctionsService.addCategory(motors);
-			logger.info("Categories saved!");
+				
+			dumpsterService.addDumpster(d1);
+			dumpsterService.addDumpster(d2);
+			dumpsterService.addDumpster(d3);
+			dumpsterService.addDumpster(d4);
+			dumpsterService.addDumpster(d5);
 
+			logger.info("Dumpsters saved!");
+			
+			//create 6 employees
+	        Employee e1 = new Employee(1L, "Carlos Gómez", "carlos.gomez@email.com", "C@rlosG123!",
+	                LocalDate.of(1985, 3, 15), 2800.00);
+	        e1.setDumpsters(List.of(d1, d2));
+	        e1.setPlants(List.of(p1));
 
-			// Initialize auctions end date
+	        Employee e2 = new Employee(2L, "Laura Martínez", "laura.martinez@email.com", "L@uraM2023",
+	                LocalDate.of(1990, 7, 22), 3100.50);
+	        e2.setDumpsters(List.of(d3));
+	        e2.setPlants(List.of(p1));
+
+	        Employee e3 = new Employee(3L, "Andrés López", "andres.lopez@email.com", "Andr3sL!456",
+	                LocalDate.of(1982, 11, 5), 2950.75);
+	        e3.setDumpsters(List.of(d4));
+	        e3.setPlants(List.of(p2));
+
+	        Employee e4 = new Employee(4L, "Sofía Pérez", "sofia.perez@email.com", "S0fi@P789!",
+	                LocalDate.of(1995, 2, 28), 2600.00);
+	        e4.setDumpsters(List.of(d5));
+	        e4.setPlants(List.of(p2));
+
+	        Employee e5 = new Employee(5L, "Diego Ruiz", "diego.ruiz@email.com", "Di3goR#987",
+	                LocalDate.of(1988, 9, 12), 3250.90);
+	        e5.setDumpsters(List.of(d1, d3));
+	        e5.setPlants(List.of(p1, p2));
+
+	        Employee e6 = new Employee(6L, "Elena Torres", "elena.torres@email.com", "El3naT2023!",
+	                LocalDate.of(1993, 6, 8), 2750.30);
+	        e6.setDumpsters(List.of(d2, d5));
+	        e6.setPlants(List.of(p2));
+	        
+	        AuthService.addUser(e1);
+	        AuthService.addUser(e2);
+	        AuthService.addUser(e3);
+	        AuthService.addUser(e4);
+	        AuthService.addUser(e5);
+	        AuthService.addUser(e6);
+	        
+	        logger.info("Employees saved!");
+
+			// calendar
 			Calendar calendar = Calendar.getInstance();
 			
 			// Set calendar to December 31, current year
@@ -69,35 +113,7 @@ public class DataInitializer {
 			
 			Date auctionEndDate = calendar.getTime();
 			
-			// Articles of Electronics category
-            Article iphone = new Article(0, "Apple iPhone 14 Pro", 999.99f, auctionEndDate, electronics, batman);
-            Article ps5 = new Article(1, "Sony PlayStation 5", 499.99f, auctionEndDate, electronics, spiderman);
-            Article macbook = new Article(2, "MacBook Air M2", 1199.99f, auctionEndDate, electronics, wonderWoman);
-            Article samsung = new Article(3, "Samsung Galaxy S21", 799.99f, auctionEndDate, electronics, captainMarvel);
-            // Articles of Sporting Goods category
-            Article tennisRacket = new Article(4, "Wilson Tennis Racket", 119.99f, auctionEndDate, sports, batman);
-            Article soccerBall = new Article(5, "Adidas Soccer Ball", 29.99f, auctionEndDate, sports, blackWidow);
-            Article fitbit = new Article(6, "Fitbit Charge 5 Fitness Tracker", 149.99f, auctionEndDate, sports, captainMarvel);
-            Article peloton = new Article(7, "Peloton Exercise Bike", 1899.99f, auctionEndDate, sports, wonderWoman);
-            // Articles of Motors category
-            Article tesla = new Article(8, "Tesla Model 3", 42999.99f, auctionEndDate, motors, batman);
-            Article civic = new Article(9, "Honda Civic 2021", 21999.99f, auctionEndDate, motors, superman);
-            Article f150 = new Article(10, "Ford F-150 Pickup Truck", 33999.99f, auctionEndDate, motors, spiderman);
-            Article corvette = new Article(11, "Chevrolet Corvette Stingray", 59999.99f, auctionEndDate, motors, captainMarvel);
-
-            auctionsService.addArticle(iphone);
-            auctionsService.addArticle(ps5);
-            auctionsService.addArticle(macbook);
-            auctionsService.addArticle(samsung);
-            auctionsService.addArticle(tennisRacket);
-            auctionsService.addArticle(soccerBall);
-            auctionsService.addArticle(fitbit);
-            auctionsService.addArticle(peloton);
-            auctionsService.addArticle(tesla);
-            auctionsService.addArticle(civic);
-            auctionsService.addArticle(f150);
-            auctionsService.addArticle(corvette);
-            logger.info("Articles saved!");						
+								
 		};
 	}
 }

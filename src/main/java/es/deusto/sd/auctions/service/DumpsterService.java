@@ -5,6 +5,7 @@ import java.util.Map;
 
 import es.deusto.sd.auctions.entity.Article;
 import es.deusto.sd.auctions.entity.Bid;
+import es.deusto.sd.auctions.entity.Category;
 import es.deusto.sd.auctions.entity.Dumpster;
 import es.deusto.sd.auctions.entity.Employee;
 import es.deusto.sd.auctions.entity.User;
@@ -18,5 +19,11 @@ public class DumpsterService {
 		// Retrieve the article by ID
 		Employee employee = authService.getUserByToken(token);
 		employee.createDumpster(dumpsterId,PC,city,address, type);
+	}
+	
+	public void addDumpster(Dumpster dumpster) {
+		if (dumpster != null) {
+			dumpsterRepository.putIfAbsent(dumpster.getId(), dumpster);
+		}
 	}
 }
