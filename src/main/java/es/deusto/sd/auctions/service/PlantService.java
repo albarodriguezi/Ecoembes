@@ -14,7 +14,6 @@ public class PlantService {
     
     private final AuthService authService;
     private static Map<Long, Plant> plantRepository = new HashMap<>();
-    private static long plantIdCounter = 1;
 
     public PlantService(AuthService authService) {
         this.authService = authService;
