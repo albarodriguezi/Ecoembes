@@ -7,6 +7,7 @@ public class Plant {
 	private int PC;
 	private String city;
 	private String address;
+	private int capacity;
 	
 	public Plant() {}
 	
@@ -49,11 +50,19 @@ public class Plant {
 		this.address = address;
 	}
 
+	public int getCapacity() {
+		return capacity;
+	}
+	
+	public void setCapacity(int capacity) {
+		this.capacity = capacity;
+	}
+	
 	@Override
 	public int hashCode() {
-		return Objects.hash(PC, address, city, id);
+		return Objects.hash(PC, address, capacity, city, id);
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -63,10 +72,7 @@ public class Plant {
 		if (getClass() != obj.getClass())
 			return false;
 		Plant other = (Plant) obj;
-		return PC == other.PC && Objects.equals(address, other.address) && Objects.equals(city, other.city)
-				&& id == other.id;
+		return PC == other.PC && Objects.equals(address, other.address) && capacity == other.capacity
+				&& Objects.equals(city, other.city) && id == other.id;
 	}
-	
-	
-	
 }
