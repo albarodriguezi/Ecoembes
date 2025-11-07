@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import es.deusto.sd.auctions.entity.Dumpster;
 import es.deusto.sd.auctions.entity.Employee;
 import es.deusto.sd.auctions.entity.Plant;
+import es.deusto.sd.auctions.entity.Usage;
 import es.deusto.sd.auctions.service.AuctionsService;
 import es.deusto.sd.auctions.service.AuthService;
 import es.deusto.sd.auctions.service.DumpsterService;
@@ -99,6 +100,23 @@ public class DataInitializer {
 	        AuthService.addUser(e6);
 	        
 	        logger.info("Employees saved!");
+	        
+	        
+	        //create usage (dumpsters assigned to plants over time)
+
+	        Usage u1 = new Usage(LocalDate.of(2024, 1, 15), d1, p1); // Bilbao - Organic
+	        Usage u2 = new Usage(LocalDate.of(2024, 2, 10), d2, p1); // Bilbao - Plastic
+	        Usage u3 = new Usage(LocalDate.of(2024, 3, 5), d3, p1);  // Bilbao - Glass
+	        Usage u4 = new Usage(LocalDate.of(2024, 1, 20), d4, p2); // Pamplona - Paper
+	        Usage u5 = new Usage(LocalDate.of(2024, 2, 18), d5, p2); // Pamplona - Metal
+
+	        // mixtos
+	        Usage u6 = new Usage(LocalDate.of(2024, 4, 25), d1, p1);
+	        Usage u7 = new Usage(LocalDate.of(2024, 5, 10), d2, p1);
+	        Usage u8 = new Usage(LocalDate.of(2024, 6, 2), d4, p2);
+	        Usage u9 = new Usage(LocalDate.of(2024, 7, 12), d5, p2);
+	        Usage u10 = new Usage(LocalDate.of(2024, 8, 3), d3, p1);
+
 
 			// calendar
 			Calendar calendar = Calendar.getInstance();
