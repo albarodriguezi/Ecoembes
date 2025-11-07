@@ -11,11 +11,13 @@ public class Plant {
 	
 	public Plant() {}
 	
-	public Plant(long id, int pC, String city, String address) {
+	
+	public Plant(long id, int pC, String city, String address, int capacity) {
 		this.id = id;
 		PC = pC;
 		this.city = city;
 		this.address = address;
+		this.capacity = capacity;
 	}
 
 	public long getId() {
