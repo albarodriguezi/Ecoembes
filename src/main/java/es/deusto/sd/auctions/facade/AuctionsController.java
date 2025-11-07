@@ -23,10 +23,12 @@ import es.deusto.sd.auctions.dto.ArticleDTO;
 import es.deusto.sd.auctions.dto.CategoryDTO;
 import es.deusto.sd.auctions.entity.Article;
 import es.deusto.sd.auctions.entity.Category;
+import es.deusto.sd.auctions.entity.Employee;
 import es.deusto.sd.auctions.entity.User;
 import es.deusto.sd.auctions.service.AuctionsService;
 import es.deusto.sd.auctions.service.AuthService;
 import es.deusto.sd.auctions.service.CurrencyService;
+import es.deusto.sd.auctions.service.DumpsterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -39,12 +41,12 @@ public class AuctionsController {
 
 	private final AuctionsService auctionsService;
 	private final AuthService authService;
-	private final CurrencyService currencyService;
+	private final DumpsterService dumpsterService;
 
-	public AuctionsController(AuctionsService auctionsService, AuthService authService, CurrencyService currencyService) {
+	public AuctionsController(AuctionsService auctionsService, AuthService authService, DumpsterService dumpsterService) {
 		this.auctionsService = auctionsService;
 		this.authService = authService;
-		this.currencyService = currencyService;
+		this.dumpsterService = dumpsterService;
 	}
 
 	// GET all categories
@@ -76,6 +78,7 @@ public class AuctionsController {
 	}
 
 	// GET articles by category name
+	/* 
 	@Operation(
 		summary = "Get articles by category name",
 		description = "Returns a list of all articles for a given category",
@@ -87,7 +90,7 @@ public class AuctionsController {
 			@ApiResponse(responseCode = "500", description = "Internal server error")
 		}
 	)
-	 
+	
 	@GetMapping("/categories/{categoryName}/articles")
 	public ResponseEntity<List<ArticleDTO>> getArticlesByCategory(
 			@Parameter(name = "categoryName", description = "Name of the category", required = true, example = "Electronics")
@@ -117,7 +120,7 @@ public class AuctionsController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+	*/
 	// GET details of an article by ID
 	@Operation(
 		summary = "Get the details of an article by its ID",
@@ -129,7 +132,7 @@ public class AuctionsController {
 			@ApiResponse(responseCode = "500", description = "Internal server error")
 		}
 	)
-	 
+	 /*
 	@GetMapping("/articles/{articleId}/details")
 	public ResponseEntity<ArticleDTO> getArticleDetails(
 			@Parameter(name = "articleId", description = "Id of the article", required = true, example = "1")
@@ -159,46 +162,42 @@ public class AuctionsController {
 
 	// POST to make a bid on an article
 	@Operation(
-	    summary = "Make a bid on an article",
-	    description = "Allows a user to make a bid on a specified article within a category",
+	    summary = "Create a dumpster",
+	    description = "Allow an employee to crate a dumpster by providing its location and capacity.",
 	    responses = {
-	        @ApiResponse(responseCode = "204", description = "No Content: Bid placed successfully"),
-			@ApiResponse(responseCode = "400", description = "Bad Request: Currency not supported"),
-	        @ApiResponse(responseCode = "401", description = "Unauthorized: User not authenticated"),
-	        @ApiResponse(responseCode = "404", description = "Not Found: Article not found"),
-	        @ApiResponse(responseCode = "409", description = "Conflict: Bid amount must be greater than the current price"),
+	        @ApiResponse(responseCode = "204", description = "No Content: dumpster created successfully"),
+			@ApiResponse(responseCode = "400", description = "Bad Request: Error in the request parameters"),
+	        @ApiResponse(responseCode = "401", description = "Unauthorized: Employee not authenticated"),
+	        @ApiResponse(responseCode = "404", description = "Not Found: Dumpster not found"),
+	        @ApiResponse(responseCode = "409", description = "Conflict: Conflict with the current state of the resource"),
 	        @ApiResponse(responseCode = "500", description = "Internal server error")
 	    }
 	)		
-	@PostMapping("/articles/{articleId}/bid")
-	public ResponseEntity<Void> makeBid(
-			@Parameter(name = "articleId", description = "ID of the article to bid on", required = true, example = "1")		
-			@PathVariable("articleId") long id,
-			@Parameter(name = "amount", description = "Bid amount", required = true, example = "1001")
-    		@RequestParam("amount") float price,
-    		@Parameter(name = "currency", description = "Currency", required = true, example = "EUR")
-			@RequestParam("currency") String currentCurrency,
+	@PostMapping("/dumpster/{dumpsterId}")
+	public ResponseEntity<Void> createDumpster(
+			@Parameter(name = "dumpster", description = "ID of the dumpster", required = true, example = "1")		
+			@PathVariable("dumpsterID") long id,
+			@Parameter(name = "PC", description = "postal code of the dumpster", required = true, example = "10001")
+    		@RequestParam("dumpsterPC") int pc,
+    		@Parameter(name = "city", description = "city of the dumpster", required = true, example = "pamplona")
+			@RequestParam("dumpsterCity") String dumpsterCity,
+			@Parameter(name = "address", description = "address of the dumpster", required = true, example = "pio XII")
+			@RequestParam("dumpsterAddress") String dumpsterAddress,
+			@Parameter(name = "type", description = "type of the dumpster", required = true, example = "paper")
+			@RequestParam("dumpsterType") String dumpsterTy,
 			@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Authorization token in plain text", required = true)
     		@RequestBody String token) { 
 	    try {	    	
-	    	User user = authService.getUserByToken(token);
+	    	Employee user = authService.getUserByToken(token);
 	    	
 	    	if (user == null) {
 	    		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 	    	}
 	    	
-			Optional<Float> exchangeRate = currencyService.getExchangeRate(currentCurrency);
 			
-			if (!exchangeRate.isPresent()) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-	    	
 			// If the currency is not EUR, convert the amount to EUR
-			if (!currentCurrency.equals("EUR")) {			    
-				price /= exchangeRate.get(); // Inverting the exchange rate
-			}
 			
-	        auctionsService.makeBid(user, id, price);
+	        dumpsterService.createDumpster(id, pc, dumpsterCity, dumpsterAddress, dumpsterTy,token);
 	        
 	        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	    } catch (Exception e) {
@@ -212,7 +211,7 @@ public class AuctionsController {
 	        }
 	    }
 	}
-
+*/
 	// Converts a Category to a CategoryDTO
 	private CategoryDTO categoryToDTO(Category category) {
 		return new CategoryDTO(category.getName());
