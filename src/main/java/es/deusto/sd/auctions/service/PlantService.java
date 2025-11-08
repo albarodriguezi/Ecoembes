@@ -25,6 +25,10 @@ public class PlantService {
 		}
     }
 
+    public Plant getPlantById(long plantId) {
+        return plantRepository.get(plantId);
+    }
+    
     public int checkPlantCapacity(String token, long plantId, LocalDate date) {
     	Employee employee = authService.getUserByToken(token);
 

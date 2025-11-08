@@ -63,6 +63,13 @@ public class AuthService {
     public Employee getUserByEmail(String email) {
 		return employeeRepository.get(email);
 	}
+    
+    public Employee getUserById(long id) {
+        return employeeRepository.values().stream()
+                .filter(e -> e.getId() == id)
+                .findFirst()
+                .orElse(null);
+    }
 
     // Synchronized method to guarantee unique token generation
     private static synchronized String generateToken() {
