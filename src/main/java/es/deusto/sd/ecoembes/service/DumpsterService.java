@@ -1,4 +1,4 @@
-package es.deusto.sd.auctions.service;
+package es.deusto.sd.ecoembes.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -8,10 +8,10 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import es.deusto.sd.auctions.entity.Dumpster;
-import es.deusto.sd.auctions.entity.Employee;
-import es.deusto.sd.auctions.entity.Plant;
-import es.deusto.sd.auctions.entity.Usage;
+import es.deusto.sd.ecoembes.entity.Dumpster;
+import es.deusto.sd.ecoembes.entity.Employee;
+import es.deusto.sd.ecoembes.entity.Plant;
+import es.deusto.sd.ecoembes.entity.Usage;
 
 @Service
 public class DumpsterService {
@@ -29,10 +29,13 @@ public class DumpsterService {
 
     public void createDumpster(long dumpsterId, int PC, String city, String address, String type, String token) {
         Employee employee = authService.getUserByToken(token);
+        System.out.println("Creating dumpster for employee with token: " + token);
         if (employee == null) {
+        	System.out.println("Invalid token or expired session.");
             throw new IllegalArgumentException("Invalid token or expired session.");
         }
         employee.createDumpster(dumpsterId, PC, city, address, type);
+        System.out.println("Dumpster created: ID " + dumpsterId + ", PC " + PC + ", City " + city + ", Address " + address + ", Type " + type);
         dumpsterRepository.putIfAbsent(dumpsterId, new Dumpster(dumpsterId, PC, city, address, type));
     }
 
@@ -63,60 +66,79 @@ public class DumpsterService {
         return usagePatterns;
     }
 
-    public List<String> checkDumpsterStatus(String token, int PC, LocalDate date) {
+    public Map<Long,String> checkDumpsterStatus(String token, int PC, LocalDate date) {
+        Employee employee = authService.getUserByToken(token);
+        if (employee == null) {
+            throw new IllegalArgumentException("Invalid token or expired session.");
+        }
+        Map<Long,String> statusMap = new HashMap<>();
+        for (Dumpster d : employee.getDumpsters()) {
+			if (d.getPC() == PC) {
+				long d_id = d.getId();
+				String status = d.getStatus();
+				statusMap.put(d_id, status);
+			}
+		}
+        
+        return statusMap;
+
+        
+    }
+    
+    public Dumpster updateDumpster(long id,int containers,String token) {
         Employee employee = authService.getUserByToken(token);
         if (employee == null) {
             throw new IllegalArgumentException("Invalid token or expired session.");
         }
 
-        List<String> activity = new ArrayList<>();
+		Dumpster dumpster = dumpsterRepository.get(id);
+		if (dumpster == null) {
+			throw new IllegalArgumentException("Dumpster with ID " + id + " not found.");
+		}
+		
+		dumpster.setCapacity(containers);
+		if(containers > 120) {
+			dumpster.setStatus("RED");
+		} else if (containers >=80 && containers <120) {
+			dumpster.setStatus("ORANGE");
+		} else {
+			dumpster.setStatus("GREEN");
+		}
+        
+        return dumpster;
 
-        employee.getDumpsters().stream()
-                .filter(d -> d.getPC() == PC)
-                .forEach(d -> {
-                    boolean usedThatDay = usageRecords.stream()
-                            .anyMatch(u -> u.getDumpster().equals(d) && u.getDate().equals(date));
-                    if (usedThatDay) {
-                        activity.add("Dumpster ID " + d.getId() + " (" + d.getType() + ") was used on " + date);
-                    } else {
-                        activity.add("Dumpster ID " + d.getId() + " (" + d.getType() + ") had no activity on " + date);
-                    }
-                });
-
-        return activity;
+        
     }
 
-    public boolean assignDumpsterPlant(long RP_id, List<Long> list_d_id, long E_id) {
+    public boolean assignDumpsterPlant(long RP_id, long d_id, String token) {
         Plant plant = plantService.getPlantById(RP_id);
         if (plant == null) {
             throw new IllegalArgumentException("Plant with ID " + RP_id + " not found.");
         }
 
-        Employee employee = authService.getUserById(E_id);
+        Employee employee = authService.getUserByToken(token);
         if (employee == null) {
-            throw new IllegalArgumentException("Employee with ID " + E_id + " not found.");
+            throw new IllegalArgumentException("Employee with token " + token + " not found.");
         }
 
-        List<Dumpster> employeeDumpsters = new ArrayList<>();
-        for (Long id : list_d_id) {
-            Dumpster d = dumpsterRepository.get(id);
-            if (d != null && employee.getDumpsters().contains(d)) {
-                employeeDumpsters.add(d);
-            }
+        boolean ownsDumpster = employee.getDumpsters().stream().anyMatch(d -> d.getId() == d_id);
+        if (!ownsDumpster) {
+            throw new IllegalArgumentException("Employee does not own dumpster ID " + d_id);
         }
+        Dumpster dumpster = dumpsterRepository.get(d_id);
 
-        if (employeeDumpsters.size() > plant.getCapacity()) {
+        if (dumpster.getCapacity()>plant.getCapacity()) {
             System.out.println("Plant " + RP_id + " does not have enough capacity.");
             return false;
         }
 
-        for (Dumpster d : employeeDumpsters) {
-            Usage usage = new Usage(LocalDate.now(), d, plant);
-            usageRecords.add(usage);
-        }
+        Usage usage = new Usage(LocalDate.now(), dumpster, plant);
+        usageRecords.add(usage);
 
-        plant.setCapacity(plant.getCapacity() - employeeDumpsters.size());
-        System.out.println("Assigned " + employeeDumpsters.size() + " dumpsters to plant " + RP_id +
+        plant.setCapacity(plant.getCapacity() - dumpster.getCapacity());
+        dumpster.setStatus("GREEN");
+        dumpster.setCapacity(0);
+        System.out.println("Assigned " + dumpster.getCapacity() + " dumpsters to plant " + RP_id +
                            " by employee " + employee.getName());
         return true;
     }

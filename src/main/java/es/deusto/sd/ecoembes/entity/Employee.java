@@ -1,4 +1,4 @@
-package es.deusto.sd.auctions.entity;
+package es.deusto.sd.ecoembes.entity;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -12,8 +12,8 @@ public class Employee {
 	private String password;
 	private LocalDate date_birth;
 	private double salary;
-	private List<Dumpster> dumpsters = new ArrayList<>();
-	private List<Plant> plants = new ArrayList<>();
+	private ArrayList<Dumpster> dumpsters = new ArrayList<>();
+	private ArrayList<Plant> plants = new ArrayList<>();
 	
 	public Employee() {}
 	
@@ -83,7 +83,10 @@ public class Employee {
 	}
 
 	public void setDumpsters(List<Dumpster> dumpsters) {
-		this.dumpsters = dumpsters;
+		for (Dumpster d : dumpsters) {
+			this.dumpsters.add(d);
+		}
+
 	}
 
 	public List<Plant> getPlants() {
@@ -91,12 +94,17 @@ public class Employee {
 	}
 
 	public void setPlants(List<Plant> plants) {
-		this.plants = plants;
+		for (Plant p : plants) {
+			this.plants.add(p);
+		}
 	}
 	
 	public void createDumpster(long dumpsterId, int PC, String city, String address, String type) {
+		System.out.println("Employee " + this.name + " is creating dumpster with ID " + dumpsterId);
 		Dumpster dumpster = new Dumpster(dumpsterId, PC, city, address, type);
+		System.out.println(this.dumpsters.toString());
 		this.dumpsters.add(dumpster);
+		
 	}
 
 	@Override

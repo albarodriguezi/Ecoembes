@@ -1,16 +1,18 @@
-package es.deusto.sd.auctions.dto;
+package es.deusto.sd.ecoembes.dto;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import es.deusto.sd.auctions.entity.Usage;
+import es.deusto.sd.ecoembes.entity.Usage;
 
 public class UsageDTO {
+	private long d_id;
 	private List<Usage> usages = new ArrayList<>();
 	
 	public UsageDTO() {}
 	
-	public UsageDTO(List<Usage> usages) {
+	public UsageDTO(List<Usage> usages,long d_id) {
+		this.d_id= d_id;
 		this.usages = usages;
 	}
 
@@ -20,6 +22,14 @@ public class UsageDTO {
 
 	public void setUsages(List<Usage> usages) {
 		this.usages = usages;
+	}
+
+	public long getD_id() {
+		return d_id;
+	}
+
+	public void setD_id(long d_id) {
+		this.d_id = d_id;
 	}
 	
 	

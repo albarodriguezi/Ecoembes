@@ -1,4 +1,4 @@
-package es.deusto.sd.auctions.entity;
+package es.deusto.sd.ecoembes.entity;
 
 import java.time.LocalDate;
 import java.util.Objects;

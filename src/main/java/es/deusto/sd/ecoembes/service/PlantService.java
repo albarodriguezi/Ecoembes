@@ -1,4 +1,4 @@
-package es.deusto.sd.auctions.service;
+package es.deusto.sd.ecoembes.service;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import es.deusto.sd.auctions.entity.Employee;
-import es.deusto.sd.auctions.entity.Plant;
+import es.deusto.sd.ecoembes.entity.Employee;
+import es.deusto.sd.ecoembes.entity.Plant;
 
 @Service
 public class PlantService {

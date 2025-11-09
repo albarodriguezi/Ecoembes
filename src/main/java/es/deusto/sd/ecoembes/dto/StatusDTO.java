@@ -1,32 +1,36 @@
-package es.deusto.sd.auctions.dto;
+package es.deusto.sd.ecoembes.dto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import es.deusto.sd.ecoembes.entity.Dumpster;
 
 public class StatusDTO {
-	private long id;
-	private List<String> statuses = new ArrayList<>();
+	private int id;
+	private Map<Long, String> statuses = new HashMap<>();
 	
 	public StatusDTO() { }
 	
-	public StatusDTO(long id, List<String> statuses) {
+	public StatusDTO(int id, Map<Long, String> statuses) {
 		this.id = id;
 		this.statuses = statuses;
 	}
 	
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 	
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	
-	public List<String> getStatuses() {
+	public Map<Long, String> getStatuses() {
 		return statuses;
 	}
 	
-	public void setStatuses(List<String> statuses) {
+	public void setStatuses(Map<Long, String> statuses) {
 		this.statuses = statuses;
 	}
 	

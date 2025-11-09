@@ -3,11 +3,11 @@
  * adapted using GitHub Copilot. It has been thoroughly reviewed 
  * and validated to ensure correctness and that it is free of errors.
  */
-package es.deusto.sd.auctions.service;
+package es.deusto.sd.ecoembes.service;
 
 import org.springframework.stereotype.Service;
 
-import es.deusto.sd.auctions.entity.Employee;
+import es.deusto.sd.ecoembes.entity.Employee;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,8 @@ public class AuthService {
         
         if (user != null && user.checkPassword(password)) {
             String token = generateToken();  // Generate a random token for the session
-            tokenStore.put(token, user);     // Store the token and associate it with the user
+            tokenStore.put(token, user);    // Store the token and associate it with the user
+            System.out.println(tokenStore.toString());
 
             return Optional.of(token);
         } else {
@@ -38,6 +39,7 @@ public class AuthService {
     
     // Logout method to remove the token from the session store
     public Optional<Boolean> logout(String token) {
+    	System.out.println(tokenStore.toString()+"=Logout called with token: " + token);
         if (tokenStore.containsKey(token)) {
             tokenStore.remove(token);
 

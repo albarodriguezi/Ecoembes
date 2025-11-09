@@ -3,9 +3,10 @@
  * adapted using GitHub Copilot. It has been thoroughly reviewed 
  * and validated to ensure correctness and that it is free of errors.
  */
-package es.deusto.sd.auctions;
+package es.deusto.sd.ecoembes;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -16,14 +17,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import es.deusto.sd.auctions.entity.Dumpster;
-import es.deusto.sd.auctions.entity.Employee;
-import es.deusto.sd.auctions.entity.Plant;
-import es.deusto.sd.auctions.entity.Usage;
-import es.deusto.sd.auctions.service.AuctionsService;
-import es.deusto.sd.auctions.service.AuthService;
-import es.deusto.sd.auctions.service.DumpsterService;
-import es.deusto.sd.auctions.service.PlantService;
+import es.deusto.sd.ecoembes.entity.Dumpster;
+import es.deusto.sd.ecoembes.entity.Employee;
+import es.deusto.sd.ecoembes.entity.Plant;
+import es.deusto.sd.ecoembes.entity.Usage;
+import es.deusto.sd.ecoembes.service.AuthService;
+import es.deusto.sd.ecoembes.service.DumpsterService;
+import es.deusto.sd.ecoembes.service.PlantService;
 
 @Configuration
 public class DataInitializer {
@@ -45,11 +45,11 @@ public class DataInitializer {
 			logger.info("Plants saved!");
 
 			//Create 5 dumpsters
-			Dumpster d1 = new Dumpster(1L, 28001, "Bilbao", "Calle Gran Vía 120", "Organic");
-			Dumpster d2 = new Dumpster(2L, 28001, "Bilbao", "Calle Gran Vía 120", "Plastic");
-			Dumpster d3 = new Dumpster(3L, 28001, "Bilbao", "Calle Gran Vía 120", "Glass");
-			Dumpster d4 = new Dumpster(4L, 8001, "Pamplona", "Avenida Carlos III 45", "Paper");
-			Dumpster d5 = new Dumpster(5L, 8001, "Pamplona", "Avenida Carlos III 45", "Metal");
+			Dumpster d1 = new Dumpster(1L, 28001, "Bilbao", "Calle Gran Vía 120", "Organic",130);
+			Dumpster d2 = new Dumpster(2L, 8001, "Bilbao", "Calle Gran Vía 120", "Plastic",20);
+			Dumpster d3 = new Dumpster(3L, 28001, "Bilbao", "Calle Gran Vía 120", "Glass",90);
+			Dumpster d4 = new Dumpster(4L, 8001, "Pamplona", "Avenida Carlos III 45", "Paper",60);
+			Dumpster d5 = new Dumpster(5L, 8001, "Pamplona", "Avenida Carlos III 45", "Metal",40);
 
 			
 				
@@ -82,12 +82,12 @@ public class DataInitializer {
 	        e4.setDumpsters(List.of(d5));
 	        e4.setPlants(List.of(p2));
 
-	        Employee e5 = new Employee(5L, "Diego Ruiz", "diego.ruiz@email.com", "Di3goR#987",
+	        Employee e5 = new Employee(5L, "Diego Ruiz", "string", "string",
 	                LocalDate.of(1988, 9, 12), 3250.90);
 	        e5.setDumpsters(List.of(d1, d3));
 	        e5.setPlants(List.of(p1, p2));
 
-	        Employee e6 = new Employee(6L, "Elena Torres", "elena.torres@email.com", "El3naT2023!",
+	        Employee e6 = new Employee(6L, "Elena Torres", "email@email.com", "password",
 	                LocalDate.of(1993, 6, 8), 2750.30);
 	        e6.setDumpsters(List.of(d2, d5));
 	        e6.setPlants(List.of(p2));
@@ -117,6 +117,17 @@ public class DataInitializer {
 	        Usage u9 = new Usage(LocalDate.of(2024, 7, 12), d5, p2);
 	        Usage u10 = new Usage(LocalDate.of(2024, 8, 3), d3, p1);
 
+	        DumpsterService.addUsage(u1);
+	        DumpsterService.addUsage(u2);
+	        DumpsterService.addUsage(u3);
+	        DumpsterService.addUsage(u4);
+	        DumpsterService.addUsage(u5);
+	        DumpsterService.addUsage(u6);
+	        DumpsterService.addUsage(u7);
+	        DumpsterService.addUsage(u8);
+	        DumpsterService.addUsage(u9);
+	        DumpsterService.addUsage(u10);
+	        logger.info("Usage records saved!");
 
 			// calendar
 			Calendar calendar = Calendar.getInstance();
