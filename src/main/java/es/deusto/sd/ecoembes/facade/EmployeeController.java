@@ -41,7 +41,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("")
-@Tag(name = "Auctions Controller", description = "Operations related to categories, articles and bids")
+@Tag(name = "Employee Controller", description = "Operations related to employees, dumpsters and plants")
 public class EmployeeController {
 
 	//private final AuctionsService auctionsService;
