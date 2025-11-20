@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import es.deusto.sd.ecoembes.entity.Dumpster;
 import es.deusto.sd.ecoembes.entity.Employee;
 import es.deusto.sd.ecoembes.entity.Plant;
-import es.deusto.sd.ecoembes.entity.Usage;
+import es.deusto.sd.ecoembes.entity.Registry;
 import es.deusto.sd.ecoembes.service.AuthService;
 import es.deusto.sd.ecoembes.service.DumpsterService;
 import es.deusto.sd.ecoembes.service.PlantService;
@@ -64,34 +64,27 @@ public class DataInitializer {
 			//create 6 employees
 	        Employee e1 = new Employee(1L, "Carlos Gómez", "carlos.gomez@email.com", "C@rlosG123!",
 	                LocalDate.of(1985, 3, 15), 2800.00);
-	        e1.setDumpsters(List.of(d1, d2));
-	        e1.setPlants(List.of(p1));
+
 
 	        Employee e2 = new Employee(2L, "Laura Martínez", "laura.martinez@email.com", "L@uraM2023",
 	                LocalDate.of(1990, 7, 22), 3100.50);
-	        e2.setDumpsters(List.of(d3));
-	        e2.setPlants(List.of(p1));
+	
 
 	        Employee e3 = new Employee(3L, "Andrés López", "andres.lopez@email.com", "Andr3sL!456",
 	                LocalDate.of(1982, 11, 5), 2950.75);
-	        e3.setDumpsters(List.of(d4));
-	        e3.setPlants(List.of(p2));
+	  
 
 	        Employee e4 = new Employee(4L, "Sofía Pérez", "sofia.perez@email.com", "S0fi@P789!",
 	                LocalDate.of(1995, 2, 28), 2600.00);
-	        e4.setDumpsters(List.of(d5));
-	        e4.setPlants(List.of(p2));
+	     
 
 	        Employee e5 = new Employee(5L, "Diego Ruiz", "string", "string",
 	                LocalDate.of(1988, 9, 12), 3250.90);
-	        e5.setDumpsters(List.of(d1, d3));
-	        e5.setPlants(List.of(p1, p2));
+
 
 	        Employee e6 = new Employee(6L, "Elena Torres", "email@email.com", "password",
 	                LocalDate.of(1993, 6, 8), 2750.30);
-	        e6.setDumpsters(List.of(d2, d5));
-	        e6.setPlants(List.of(p2));
-	        
+	  
 	        AuthService.addUser(e1);
 	        AuthService.addUser(e2);
 	        AuthService.addUser(e3);
@@ -104,18 +97,18 @@ public class DataInitializer {
 	        
 	        //create usage (dumpsters assigned to plants over time)
 
-	        Usage u1 = new Usage(LocalDate.of(2024, 1, 15), d1, p1); // Bilbao - Organic
-	        Usage u2 = new Usage(LocalDate.of(2024, 2, 10), d2, p1); // Bilbao - Plastic
-	        Usage u3 = new Usage(LocalDate.of(2024, 3, 5), d3, p1);  // Bilbao - Glass
-	        Usage u4 = new Usage(LocalDate.of(2024, 1, 20), d4, p2); // Pamplona - Paper
-	        Usage u5 = new Usage(LocalDate.of(2024, 2, 18), d5, p2); // Pamplona - Metal
+	        Registry u1 = new Registry(LocalDate.of(2024, 1, 15),d1.getStatus() ,d1); // Bilbao - Organic
+	        Registry u2 = new Registry(LocalDate.of(2024, 2, 10),d2.getStatus() ,d2); // Bilbao - Plastic
+	        Registry u3 = new Registry(LocalDate.of(2024, 3, 5),d3.getStatus() ,d3);  // Bilbao - Glass
+	        Registry u4 = new Registry(LocalDate.of(2024, 1, 20),d4.getStatus() ,d4); // Pamplona - Paper
+	        Registry u5 = new Registry(LocalDate.of(2024, 2, 18),d5.getStatus() ,d5); // Pamplona - Metal
 
 	        // mixtos
-	        Usage u6 = new Usage(LocalDate.of(2024, 4, 25), d1, p1);
-	        Usage u7 = new Usage(LocalDate.of(2024, 5, 10), d2, p1);
-	        Usage u8 = new Usage(LocalDate.of(2024, 6, 2), d4, p2);
-	        Usage u9 = new Usage(LocalDate.of(2024, 7, 12), d5, p2);
-	        Usage u10 = new Usage(LocalDate.of(2024, 8, 3), d3, p1);
+	        Registry u6 = new Registry(LocalDate.of(2024, 4, 25),d1.getStatus(), d1);
+	        Registry u7 = new Registry(LocalDate.of(2024, 5, 10),d2.getStatus(), d2);
+	        Registry u8 = new Registry(LocalDate.of(2024, 6, 2),d4.getStatus(), d4);
+	        Registry u9 = new Registry(LocalDate.of(2024, 7, 12),d5.getStatus(), d5);
+	        Registry u10 = new Registry(LocalDate.of(2024, 8, 3),d3.getStatus(), d3);
 
 	        DumpsterService.addUsage(u1);
 	        DumpsterService.addUsage(u2);

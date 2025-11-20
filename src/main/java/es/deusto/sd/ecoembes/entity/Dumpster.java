@@ -1,5 +1,6 @@
 package es.deusto.sd.ecoembes.entity;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Dumpster {
@@ -11,6 +12,7 @@ public class Dumpster {
 	private String type;
 	private String status;
 	private int containers;
+	private List<Registry> usageRecords;
 	
 
 

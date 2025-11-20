@@ -30,7 +30,7 @@ import es.deusto.sd.ecoembes.dto.StatusDTO;
 import es.deusto.sd.ecoembes.dto.UsageDTO;
 import es.deusto.sd.ecoembes.entity.Dumpster;
 import es.deusto.sd.ecoembes.entity.Employee;
-import es.deusto.sd.ecoembes.entity.Usage;
+import es.deusto.sd.ecoembes.entity.Registry;
 import es.deusto.sd.ecoembes.service.AuthService;
 import es.deusto.sd.ecoembes.service.DumpsterService;
 import es.deusto.sd.ecoembes.service.PlantService;
@@ -181,7 +181,7 @@ public class EmployeeController {
 	        @ApiResponse(responseCode = "500", description = "Internal server error")
 	    }
 	)		
-	@PostMapping("/dumpster/create")
+	@PostMapping("/dumpsters")
 	public ResponseEntity<Void> createDumpster(
 			@Parameter(name = "dumpsterID", description = "ID of the dumpster", required = true, example = "10")		
 			@RequestParam("dumpsterID") long id,
@@ -242,10 +242,16 @@ public class EmployeeController {
 				@Parameter(name="token",description = "Authorization token in plain text", required = true)
 				@RequestParam("token") String token){
 			try {
-				List<Usage> usage = dumpsterService.queryDumpsterUsage(token, id, fromDate, toDate);			
+				List<Registry> usage = dumpsterService.queryDumpsterUsage(token, id, fromDate, toDate);	
+				ArrayList<Registry> usageList = new ArrayList<>(usage);
+				for(Registry r : usageList) {
+					if(r.getDate().isBefore(fromDate) || r.getDate().isAfter(toDate)) {
+						usage.remove(r);
+					}
+				}
 				
 				if (usage != null) {				
-					UsageDTO dto = UsageToDTO(usage,id);
+					UsageDTO dto = UsageToDTO(usageList,id);
 					
 					return new ResponseEntity<>(dto, HttpStatus.OK);
 				} else {
@@ -339,7 +345,7 @@ public class EmployeeController {
 					}
 				)
 				 
-				@GetMapping("/dumpster/{dumpsterID}/assign")
+				@GetMapping("/dumpster/{dumpsterID}/assignment")
 				public ResponseEntity<Boolean> assignDumpsterPlant(
 						@Parameter(name = "dumpsterID", description = "Id of the dumpster", required = true, example = "1")
 						@PathVariable("dumpsterID") long id,
@@ -348,16 +354,21 @@ public class EmployeeController {
 						@Parameter(name="token",description = "Authorization token in plain text", required = true)
 						@RequestParam("token") String token){
 					try {
-						Boolean capacity = dumpsterService.assignDumpsterPlant(plant_id, id, token);			
-						
-						if (capacity != null) {				
-							return new ResponseEntity<>(capacity, HttpStatus.OK);
+						int containers = dumpsterService.assignDumpsterPlant(plant_id, id, token);			
+						long capacity = plantService.checkPlantCapacity(token, plant_id, LocalDate.now());
+						if(capacity >= containers) {
+							plantService.updatePlant(plant_id, containers);
+							boolean r = true;
+							return new ResponseEntity<>(r, HttpStatus.OK);
 						} else {
-							return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+							boolean r = false;
+							return new ResponseEntity<>(r, HttpStatus.OK);
 						}
+			
 					} catch (Exception e) {
 						return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 					}
+					
 				}
 				
 				// GET details of an article by ID
@@ -372,7 +383,7 @@ public class EmployeeController {
 					}
 				)
 				 
-				@PutMapping("/dumpster/{dumpsterID}/update")
+				@PutMapping("/dumpster/{dumpsterID}")
 				public ResponseEntity<DumpsterDTO> updateDumpster(
 						@Parameter(name = "dumpsterID", description = "Id of the dumpster", required = true, example = "1")
 						@PathVariable("dumpsterID") long id,
@@ -396,7 +407,7 @@ public class EmployeeController {
 	private DumpsterDTO DumpsterToDTO(long id, int containers,String status) {
 					return new DumpsterDTO(id,containers,status);
 				}
-	private UsageDTO UsageToDTO(List<Usage> usage,long id) {
+	private UsageDTO UsageToDTO(List<Registry> usage,long id) {
 			return new UsageDTO(usage,id);
 	}
 	private StatusDTO StatusToDTO(Map<Long, String> statusMap,int pc) {

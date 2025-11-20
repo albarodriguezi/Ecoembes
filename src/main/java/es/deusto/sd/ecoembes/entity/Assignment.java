@@ -3,25 +3,24 @@ package es.deusto.sd.ecoembes.entity;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Usage {
-	private LocalDate date;
+public class Assignment {
+	private Employee employee;
 	private Dumpster dumpster;
 	private Plant plant;
 	
-	public Usage() {}
+	public Assignment() {}
 	
-	public Usage(LocalDate date, Dumpster dumpster, Plant plant) {
-		this.date = date;
+	public Assignment(Employee employee, Dumpster dumpster, Plant plant) {
+		this.employee = employee;
 		this.dumpster = dumpster;
 		this.plant = plant;
 	}
 
-	public LocalDate getDate() {
-		return date;
+	public Employee getEmployee() {
+		return employee;
 	}
-
-	public void setDate(LocalDate date) {
-		this.date = date;
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
 	}
 
 	public Dumpster getDumpster() {
@@ -42,7 +41,7 @@ public class Usage {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(date, dumpster, plant);
+		return Objects.hash(employee, dumpster, plant);
 	}
 
 	@Override
@@ -53,8 +52,8 @@ public class Usage {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Usage other = (Usage) obj;
-		return Objects.equals(date, other.date) && Objects.equals(dumpster, other.dumpster)
+		Assignment other = (Assignment) obj;
+		return Objects.equals(employee, other.employee) && Objects.equals(dumpster, other.dumpster)
 				&& Objects.equals(plant, other.plant);
 	}
 	
