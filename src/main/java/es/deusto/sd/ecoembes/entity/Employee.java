@@ -12,8 +12,6 @@ public class Employee {
 	private String password;
 	private LocalDate date_birth;
 	private double salary;
-	private ArrayList<Dumpster> dumpsters = new ArrayList<>();
-	private ArrayList<Plant> plants = new ArrayList<>();
 	
 	public Employee() {}
 	
@@ -78,38 +76,12 @@ public class Employee {
 		this.salary = salary;
 	}
 
-	public List<Dumpster> getDumpsters() {
-		return dumpsters;
-	}
 
-	public void setDumpsters(List<Dumpster> dumpsters) {
-		for (Dumpster d : dumpsters) {
-			this.dumpsters.add(d);
-		}
 
-	}
-
-	public List<Plant> getPlants() {
-		return plants;
-	}
-
-	public void setPlants(List<Plant> plants) {
-		for (Plant p : plants) {
-			this.plants.add(p);
-		}
-	}
-	
-	public void createDumpster(long dumpsterId, int PC, String city, String address, String type) {
-		System.out.println("Employee " + this.name + " is creating dumpster with ID " + dumpsterId);
-		Dumpster dumpster = new Dumpster(dumpsterId, PC, city, address, type);
-		System.out.println(this.dumpsters.toString());
-		this.dumpsters.add(dumpster);
-		
-	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(date_birth, dumpsters, email, id, name, password, plants, salary);
+		return Objects.hash(date_birth, email, id, name, password, salary);
 	}
 
 	@Override
@@ -121,10 +93,8 @@ public class Employee {
 		if (getClass() != obj.getClass())
 			return false;
 		Employee other = (Employee) obj;
-		return Objects.equals(date_birth, other.date_birth) && Objects.equals(dumpsters, other.dumpsters)
-				&& Objects.equals(email, other.email) && id == other.id && Objects.equals(name, other.name)
-				&& Objects.equals(password, other.password) && Objects.equals(plants, other.plants)
-				&& Double.doubleToLongBits(salary) == Double.doubleToLongBits(other.salary);
+		return Objects.equals(date_birth, other.date_birth) &&  Objects.equals(email, other.email) && id == other.id && Objects.equals(name, other.name)
+				&& Objects.equals(password, other.password) &&  Double.doubleToLongBits(salary) == Double.doubleToLongBits(other.salary);
 	}
 	
 	

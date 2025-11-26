@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import es.deusto.sd.ecoembes.entity.Dumpster;
 import es.deusto.sd.ecoembes.entity.Employee;
 import es.deusto.sd.ecoembes.entity.Plant;
 
@@ -36,17 +37,16 @@ public class PlantService {
             throw new IllegalArgumentException("Invalid token or session expired.");
         }
 
-        Plant plant = employee.getPlants().stream()
-                .filter(p -> p.getId() == plantId)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
-                    "Employee " + employee.getName() + " does not have a plant with ID " + plantId + "."));
-
-        System.out.println("Employee " + employee.getName() + 
-                " is checking the capacity of plant " + plantId +
-                " on date " + date);
-
+    	Plant plant = plantRepository.get(plantId);
         return plant.getCapacity();
     }
+
+
+public boolean updatePlant(long RP_id, long containers) {
+    Plant plant = plantRepository.get(RP_id);
+    plant.setCapacity((int)(plant.getCapacity()-containers));
+    
+    return true;
+}
 }
 
