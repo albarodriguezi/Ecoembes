@@ -18,12 +18,21 @@ public class DumpsterService {
 
     private final AuthService authService;
 
+	private final DumpsterRepository dumpsterRepositoryJPA;
+    private final UsageRepository usageRepositoryJPA;
+    private final AssignmentRepository assignmentRepository;
+
     private static Map<Long, Dumpster> dumpsterRepository = new HashMap<>();
     private static List<Registry> usageRecords = new ArrayList<>();
 
-    public DumpsterService(AuthService authService) {
+    public DumpsterService(AuthService authService, PlantService plantService, DumpsterRepository dumpsterRepositoryJPA, UsageRepository usageRepositoryJPA, AssignmentRepository assignmentRepository) {
         this.authService = authService;
+        this.plantService = plantService;
+        this.dumpsterRepositoryJPA = dumpsterRepositoryJPA;
+        this.usageRepositoryJPA = usageRepositoryJPA;
+        this.assignmentRepository = assignmentRepository;
     }
+
 
     public void createDumpster(long dumpsterId, int PC, String city, String address, String type, String token) {
         Employee employee = authService.getUserByToken(token);
