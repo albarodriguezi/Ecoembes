@@ -31,7 +31,7 @@ public class DataInitializer {
 	private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
 	
     @Bean
-    CommandLineRunner initData(PlantService plantService, DumpsterService dumpsterService,AuthService AuthService) {
+    CommandLineRunner initData(PlantService plantService, DumpsterService dumpsterService,AuthService AuthService,  EmployeeRepository employeeRepository, DumpsterRepository dumpsterRepository, AssignmentRepository assignmentRepository, UsageRepository usageRepository) {
 		return args -> {	
 			
 			//create 2 plants
