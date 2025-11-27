@@ -17,6 +17,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import es.deusto.sd.ecoembes.dao.AssignmentRepository;
+import es.deusto.sd.ecoembes.dao.DumpsterRepository;
+import es.deusto.sd.ecoembes.dao.EmployeeRepository;
+import es.deusto.sd.ecoembes.dao.UsageRepository;
 import es.deusto.sd.ecoembes.entity.Dumpster;
 import es.deusto.sd.ecoembes.entity.Employee;
 import es.deusto.sd.ecoembes.entity.Plant;

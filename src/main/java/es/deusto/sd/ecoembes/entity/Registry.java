@@ -38,7 +38,7 @@ public class Registry {
 	}
 
 	public UsageId getId() {
-		return id;
+		return usageId;
 	}
 	
 }

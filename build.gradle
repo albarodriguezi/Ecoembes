@@ -18,19 +18,22 @@ java {
 }
 
 dependencies {
-	dependencies {
-	// Spring Boot Starter Web for building web applications
+    // Spring Boot Starter Web for building web applications
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	// Spring Data JPA for repository support (provides JpaRepository)
+    // Spring Data JPA for database access
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-	// Embedded H2 database for development / tests (runtime only)
+    // H2 Database for in-memory testing
     runtimeOnly 'com.h2database:h2'
 
-	// SpringDoc OpenAPI UI Dependency this is needed to use Swagger annotations
+    // SpringDoc OpenAPI UI for Swagger documentation
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13'
-    
+
     // Spring Boot Test Starter for unit/integration tests
-    testImplementation 'org.springframework.boot:spring-boot-starter-test?
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    useJUnitPlatform()
 }

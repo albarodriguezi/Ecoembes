@@ -8,6 +8,9 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import es.deusto.sd.ecoembes.dao.AssignmentRepository;
+import es.deusto.sd.ecoembes.dao.DumpsterRepository;
+import es.deusto.sd.ecoembes.dao.UsageRepository;
 import es.deusto.sd.ecoembes.entity.Dumpster;
 import es.deusto.sd.ecoembes.entity.Employee;
 import es.deusto.sd.ecoembes.entity.Plant;
@@ -27,7 +30,6 @@ public class DumpsterService {
 
     public DumpsterService(AuthService authService, PlantService plantService, DumpsterRepository dumpsterRepositoryJPA, UsageRepository usageRepositoryJPA, AssignmentRepository assignmentRepository) {
         this.authService = authService;
-        this.plantService = plantService;
         this.dumpsterRepositoryJPA = dumpsterRepositoryJPA;
         this.usageRepositoryJPA = usageRepositoryJPA;
         this.assignmentRepository = assignmentRepository;

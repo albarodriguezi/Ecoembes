@@ -6,8 +6,9 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import es.deusto.sd.ecoembes.entity.Assignment;
 import es.deusto.sd.ecoembes.entity.Employee;
-import es.deusto.sd.ecoembes.entity.Usage;
+import es.deusto.sd.ecoembes.entity.UsageId;
 
 
 @Repository

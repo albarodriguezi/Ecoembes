@@ -11,4 +11,3 @@ import es.deusto.sd.ecoembes.entity.Employee;
 public interface DumpsterRepository extends JpaRepository<Dumpster, Long>{
 	Optional<Dumpster> findByID(long id);
 }
-

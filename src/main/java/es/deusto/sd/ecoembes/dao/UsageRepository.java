@@ -13,7 +13,7 @@ import es.deusto.sd.ecoembes.entity.Dumpster;
 @Repository
 public interface UsageRepository extends JpaRepository<Registry, UsageId>{
 	List<Registry> findByIdDate(LocalDate date);
-	List<Regisytry> findByIdDumpster(Dumpster dumpster);
+	List<Registry> findByIdDumpster(Dumpster dumpster);
 	Registry findByIdDateAndIdDumpster(LocalDate date, Dumpster dumpster);
 }
 
