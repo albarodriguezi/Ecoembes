@@ -8,14 +8,12 @@ public class UsageId implements Serializable {
 
     private LocalDate date;
     private long dumpsterId;
-    private long plantId;
 
     public UsageId() {}
 
-    public UsageId(LocalDate date, long dumpsterId, long plantId) {
+    public UsageId(LocalDate date, long dumpsterId) {
         this.date = date;
         this.dumpsterId = dumpsterId;
-        this.plantId = plantId;
     }
 
     public LocalDate getDate() {
@@ -26,9 +24,6 @@ public class UsageId implements Serializable {
         return dumpsterId;
     }
 
-    public long getPlantId() {
-        return plantId;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -36,12 +31,12 @@ public class UsageId implements Serializable {
         if (!(o instanceof UsageId)) return false;
         UsageId that = (UsageId) o;
         return dumpsterId == that.dumpsterId &&
-               plantId == that.plantId &&
                Objects.equals(date, that.date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(date, dumpsterId, plantId);
+        return Objects.hash(date, dumpsterId);
     }
 }
+
