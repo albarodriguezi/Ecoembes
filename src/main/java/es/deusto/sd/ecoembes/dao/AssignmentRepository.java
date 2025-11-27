@@ -12,9 +12,10 @@ import es.deusto.sd.ecoembes.entity.Usage;
 
 @Repository
 public interface AssignmentRepository {
-	List<Usage> findAssignmentsByDumpster(long dumpsterId);
+	List<Assignment> findAssignmentsByDumpster(long dumpsterId);
 	
-	List<Usage> findAssignmentsByPlant(long plantId);
+	List<Assignment> findAssignmentsByPlant(long plantId);
 	
-	List<Usage> findAssignmentsByDate(LocalDate date);
+	List<Assignment> findAssignmentsByEmployee(long employeeId);
 }
+
