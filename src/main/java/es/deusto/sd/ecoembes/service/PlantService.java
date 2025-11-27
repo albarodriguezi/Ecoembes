@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import es.deusto.sd.ecoembes.entity.Dumpster;
 import es.deusto.sd.ecoembes.entity.Employee;
 import es.deusto.sd.ecoembes.entity.Plant;
+import es.deusto.sd.ecoembes.external.IPlantGateway;
+import es.deusto.sd.ecoembes.external.PlantGatewayFactory;
 
 @Service
 public class PlantService {
@@ -30,15 +32,18 @@ public class PlantService {
         return plantRepository.get(plantId);
     }
     
-    public int checkPlantCapacity(String token, long plantId, LocalDate date) {
-    	Employee employee = authService.getUserByToken(token);
+    public int checkPlantCapacity(String token, String type, LocalDate date) {
+		try {
+			IPlantGateway plantGateway = PlantGatewayFactory.create(type);
+			return plantGateway.getCapacity(date.toString());
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 
-        if (employee == null) {
-            throw new IllegalArgumentException("Invalid token or session expired.");
-        }
-
-    	Plant plant = plantRepository.get(plantId);
-        return plant.getCapacity();
+		return -1;
     }
 
 
