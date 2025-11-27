@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import es.deusto.sd.ecoembes.entity.Dumpster;
 import es.deusto.sd.ecoembes.entity.Employee;
 
-public interface DumpsterRepository extends JpaRepository<Employee, Long>{
+public interface DumpsterRepository extends JpaRepository<Dumpster, Long>{
 	Optional<Dumpster> findByID(long id);
 }
+
