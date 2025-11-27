@@ -7,12 +7,14 @@ public class Registry {
 	LocalDate date;
 	String level;
 	Dumpster dumpster;
+	UsageId usageId;
 	
 	public Registry(LocalDate date, String level, Dumpster dumpster) {
 		super();
 		this.date = date;
 		this.level = level;
 		this.dumpster = dumpster;
+		this.usageId = new UsageId(date,dumpster.getId());
 	}
 	
 	public LocalDate getDate() {
@@ -33,6 +35,10 @@ public class Registry {
 	}
 	public void setDumpster(Dumpster dumpster) {
 		this.dumpster = dumpster;
+	}
+
+	public UsageId getId() {
+		return id;
 	}
 	
 }
