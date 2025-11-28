@@ -1,126 +1,105 @@
 package es.deusto.sd.ecoembes.entity;
 
-import java.util.List;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
 import java.util.Objects;
 
+@Entity
+@Table(name = "dumpsters")
 public class Dumpster {
 
-	private long id;
-	private int PC;
-	private String city;
-	private String address;
-	private String type;
-	private String status;
-	private int containers;
-	private List<Registry> usageRecords;
-	
+    @Id
+    private long id;  // Manual ID, assign before saving
 
+    @Column(nullable = false)
+    private int PC;
 
-	public Dumpster() {}
-	
-	public Dumpster(long id, int pC, String city, String address, String type,int containers) {
-		this.id = id;
-		PC = pC;
-		this.city = city;
-		this.address = address;
-		this.type = type;
-		this.containers = containers;
-		if(containers > 120) {
-			this.setStatus("RED");
-		} else if (containers >=80 && containers <120) {
-			this.setStatus("ORANGE");
-		} else {
-			this.setStatus("GREEN");
-		}
-	}
-	public Dumpster(long id, int pC, String city, String address, String type) {
-		this.id = id;
-		PC = pC;
-		this.city = city;
-		this.address = address;
-		this.type = type;
-		this.containers = 0;
-		if(containers > 120) {
-			this.setStatus("RED");
-		} else if (containers >=80 && containers <120) {
-			this.setStatus("ORANGE");
-		} else {
-			this.setStatus("GREEN");
-		}
-	}
+    @Column(nullable = false)
+    private String city;
 
-	public long getId() {
-		return id;
-	}
+    @Column(nullable = false)
+    private String address;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    @Column(nullable = false)
+    private String type;
 
-	public int getPC() {
-		return PC;
-	}
+    @Column(nullable = false)
+    private String status;
 
-	public void setPC(int pC) {
-		PC = pC;
-	}
+    @Column(nullable = false)
+    private int containers;
 
-	public String getCity() {
-		return city;
-	}
+    // Empty constructor required by JPA
+    public Dumpster() {}
 
-	public void setCity(String city) {
-		this.city = city;
-	}
+    // Constructor with manual ID
+    public Dumpster(long id, int PC, String city, String address, String type, int containers) {
+        this.id = id;
+        this.PC = PC;
+        this.city = city;
+        this.address = address;
+        this.type = type;
+        this.containers = containers;
+        updateStatus();
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    // Constructor with 0 containers by default
+    public Dumpster(long id, int PC, String city, String address, String type) {
+        this(id, PC, city, address, type, 0);
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
-	
-	public String getType() {
-		return type;
-	}
-	
-	public void setType(String type) {
-		this.type = type;
-	}
+    // Calculate status based on container count
+    private void updateStatus() {
+        if (containers > 120) {
+            this.status = "RED";
+        } else if (containers >= 80) {
+            this.status = "ORANGE";
+        } else {
+            this.status = "GREEN";
+        }
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(PC, address, city, id);
-	}
-	public int getCapacity() {
-		return containers;
-	}
+    // --- Getters & Setters ---
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
 
-	public void setCapacity(int capacity) {
-		this.containers = capacity;
-	}
+    public int getPC() { return PC; }
+    public void setPC(int PC) { this.PC = PC; }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Dumpster other = (Dumpster) obj;
-		return PC == other.PC && Objects.equals(address, other.address) && Objects.equals(city, other.city)
-				&& id == other.id;
-	}
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
 
-	public String getStatus() {
-		return status;
-	}
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	
-	
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
+
+    public int getContainers() { return containers; }
+    public void setContainers(int containers) { 
+        this.containers = containers;
+        updateStatus();
+    }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    // Optional: override equals/hashCode
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, PC, city, address);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Dumpster other = (Dumpster) obj;
+        return id == other.id && PC == other.PC &&
+               Objects.equals(city, other.city) &&
+               Objects.equals(address, other.address);
+    }
 }
+

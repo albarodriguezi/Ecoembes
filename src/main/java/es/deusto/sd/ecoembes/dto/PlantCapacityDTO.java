@@ -2,21 +2,21 @@ package es.deusto.sd.ecoembes.dto;
 
 public class PlantCapacityDTO {
 	
-	private int id;
+	private String id;
 	private int capacity;
 	
 	public PlantCapacityDTO() { }
 	
-	public PlantCapacityDTO(int id, int capacity) {
+	public PlantCapacityDTO(String id, int capacity) {
 		this.id = id;
 		this.capacity = capacity;
 	}
 	
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 	
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	

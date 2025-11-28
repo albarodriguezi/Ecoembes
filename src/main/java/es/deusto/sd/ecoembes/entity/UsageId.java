@@ -4,9 +4,15 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import jakarta.persistence.Embeddable;
+@Embeddable
 public class UsageId implements Serializable {
 
-    private LocalDate date;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private LocalDate date;
     private long dumpsterId;
 
     public UsageId() {}
@@ -38,5 +44,10 @@ public class UsageId implements Serializable {
     public int hashCode() {
         return Objects.hash(date, dumpsterId);
     }
+
+	public void setDate(LocalDate date2) {
+		this.date = date2;
+		
+	}
 }
 
