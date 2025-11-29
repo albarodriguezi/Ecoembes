@@ -313,16 +313,20 @@ public class EmployeeController {
 				 
 				@GetMapping("/plant/{plantID}/capacity")
 				public ResponseEntity<PlantCapacityDTO> checkPlantCapacity(
-						@Parameter(name = "plantID", description = "ID of the plant", required = true, example = "1")
-						@PathVariable("plantID") String id,
-						@Parameter(name = "Date", description = "Date (DDMMYYYY)", required = true, example = "01012024")
-						@RequestParam("Date") @DateTimeFormat(pattern="ddMMyyyy") LocalDate fromDate,
-						@Parameter(name="token",description = "Authorization token in plain text", required = true)
-						@RequestParam("token") String token){
+				    @Parameter(name = "plantID", description = "ID of the plant", required = true, example = "1")
+				    @PathVariable("plantID") String id,
+				    @Parameter(name = "Date", description = "Date (DDMMYYYY)", required = true, example = "01012024")
+				    @RequestParam("Date") @DateTimeFormat(pattern="ddMMyyyy") LocalDate fromDate,
+				    @Parameter(name="token",description = "Authorization token in plain text", required = true)
+				    @RequestParam("token") String token,
+				    @Parameter(name = "type", description = "Gateway type (PLASSB or CONT_SOCKET)", required = true, example = "PLASSB")
+				    @RequestParam("type") String type) {
 					try {
-						Integer capacity = plantService.checkPlantCapacity(token, id, fromDate);			
-						
-						if (capacity != null) {				
+
+						Integer capacity = plantService.checkPlantCapacity(token, type, Long.parseLong(id), fromDate);
+
+
+						if (capacity != null) {
 							PlantCapacityDTO dto = PlantCapacityToDTO(id,capacity);
 							return new ResponseEntity<>(dto, HttpStatus.OK);
 						} else {
@@ -331,6 +335,7 @@ public class EmployeeController {
 					} catch (Exception e) {
 						return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 					}
+
 				}
 				
 				// GET details of an article by ID
@@ -352,10 +357,12 @@ public class EmployeeController {
 						@Parameter(name = "plantID", description = "Id of the dumpster", required = true, example = "1")
 						@RequestParam("plantID") long plant_id,
 						@Parameter(name="token",description = "Authorization token in plain text", required = true)
-						@RequestParam("token") String token){
+					    @RequestParam("token") String token,
+					    @Parameter(name = "type", description = "Gateway type (PLASSB or CONT_SOCKET)", required = true, example = "PLASSB")
+					    @RequestParam("type") String type) {
 					try {
 						int containers = dumpsterService.assignDumpsterPlant(plant_id, id, token);			
-						long capacity = plantService.checkPlantCapacity(token, Long.toString(plant_id), capacity, LocalDate.now());
+						long capacity = plantService.checkPlantCapacity(token, type, plant_id, LocalDate.now());
 						if(capacity >= containers) {
 							plantService.updatePlant(plant_id, containers);
 							boolean r = true;
