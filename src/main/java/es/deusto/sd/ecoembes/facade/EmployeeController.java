@@ -279,7 +279,7 @@ public class EmployeeController {
 				public ResponseEntity<StatusDTO> checkDumpsterStatus(
 						@Parameter(name = "PC", description = "Postal Code of the dumpsters", required = true, example = "28001")
 						@PathVariable("PC") int id,
-						@Parameter(name = "Date", description = "Date (DDMMYYYY)", required = true, example = "01012024")
+						@Parameter(name = "Date", description = "Date (DDMMYYYY)", required = true, example = "15012024")
 						@RequestParam("Date") @DateTimeFormat(pattern="ddMMyyyy") LocalDate fromDate,
 						@Parameter(name="token",description = "Authorization token in plain text", required = true)
 						@RequestParam("token") String token){

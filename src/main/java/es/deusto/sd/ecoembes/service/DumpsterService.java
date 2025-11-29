@@ -44,14 +44,14 @@ public class DumpsterService {
             throw new IllegalArgumentException("Invalid token or expired session.");
         }
 		Dumpster dumpster = new Dumpster(dumpsterId, PC, city, address, type);
-		dumpsterRepository.put(dumpsterId,dumpster);
+		dumpsterRepositoryJPA.save(dumpster);
         System.out.println("Dumpster created: ID " + dumpsterId + ", PC " + PC + ", City " + city + ", Address " + address + ", Type " + type);
-        dumpsterRepository.putIfAbsent(dumpsterId, new Dumpster(dumpsterId, PC, city, address, type));
+        
     }
 
     public void addDumpster(Dumpster dumpster) {
         if (dumpster != null) {
-            dumpsterRepository.putIfAbsent(dumpster.getId(), dumpster);
+            dumpsterRepositoryJPA.save(dumpster);
         }
     }
 
@@ -63,8 +63,8 @@ public class DumpsterService {
 
 
         List<Registry> usagePatterns = new ArrayList<>();
-        for (Registry u : usageRecords) {
-            if (u.getDumpster().getId() == d_id &&
+        for (Registry u : usageRepositoryJPA.findAll()) {
+            if (u.getDumpster() == d_id &&
                 (!u.getDate().isBefore(i_date) && !u.getDate().isAfter(f_date))) {
                 usagePatterns.add(u);
             }
@@ -78,9 +78,9 @@ public class DumpsterService {
             throw new IllegalArgumentException("Invalid token or expired session.");
         }
         Map<Long,String> statusMap = new HashMap<>();
-        for (Registry d : usageRecords) {
-			if (d.getDumpster().getPC() == PC && d.getDate().equals(date)) {
-				long d_id = d.getDumpster().getId();
+        for (Registry d : usageRepositoryJPA.findAll()) {
+			if (dumpsterRepositoryJPA.findById(d.getDumpster()).orElse(null).getPC() == PC && d.getDate().equals(date)) {
+				long d_id = d.getDumpster();
 				String status = d.getLevel();
 				statusMap.put(d_id, status);
 			}
@@ -97,7 +97,7 @@ public class DumpsterService {
             throw new IllegalArgumentException("Invalid token or expired session.");
         }
 
-		Dumpster dumpster = dumpsterRepository.get(id);
+		Dumpster dumpster = dumpsterRepositoryJPA.findById(id).orElse(null);
 		if (dumpster == null) {
 			throw new IllegalArgumentException("Dumpster with ID " + id + " not found.");
 		}
@@ -121,11 +121,17 @@ public class DumpsterService {
     public int assignDumpsterPlant(long RP_id, long d_id, String token) {
 
 
-        Dumpster dumpster = dumpsterRepository.get(d_id);
+        Dumpster dumpster = dumpsterRepositoryJPA.findById(d_id).orElse(null);
 		return dumpster.getContainers();
     }
 
-    public static void addUsage(Registry usage) {
-        if (usage != null) usageRecords.add(usage);
+    public void addUsage(Registry usage) {
+        if (usage != null)
+			try {
+				this.usageRepositoryJPA.save(usage);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     }
 }

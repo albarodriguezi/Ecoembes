@@ -25,6 +25,7 @@ public class Registry {
     @Column(nullable = false)
     private String level;
 
+    public Registry() {}
     public Registry(LocalDate date, String level, Dumpster dumpster) {
         this.usageId = new UsageId(date, dumpster.getId()); // dumpsterId will be filled in automatically
         this.level = level;
@@ -44,12 +45,10 @@ public class Registry {
 	public void setLevel(String level) {
 		this.level = level;
 	}
-	public Dumpster getDumpster() {
-		return dumpster;
+	public long getDumpster() {
+		return this.usageId.getDumpsterId();
 	}
-	public void setDumpster(Dumpster dumpster) {
-		this.dumpster = dumpster;
-	}
+
 
 	public UsageId getId() {
 		return usageId;
