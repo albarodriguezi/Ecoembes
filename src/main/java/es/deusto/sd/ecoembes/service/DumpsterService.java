@@ -102,7 +102,7 @@ public class DumpsterService {
 			throw new IllegalArgumentException("Dumpster with ID " + id + " not found.");
 		}
 		
-		dumpster.setCapacity(containers);
+		dumpster.setContainers(containers);
 		if(containers > 120) {
 			dumpster.setStatus("RED");
 		} else if (containers >=80 && containers <120) {
@@ -122,7 +122,7 @@ public class DumpsterService {
 
 
         Dumpster dumpster = dumpsterRepository.get(d_id);
-		return dumpster.getCapacity();
+		return dumpster.getContainers();
     }
 
     public static void addUsage(Registry usage) {

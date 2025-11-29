@@ -314,7 +314,7 @@ public class EmployeeController {
 				@GetMapping("/plant/{plantID}/capacity")
 				public ResponseEntity<PlantCapacityDTO> checkPlantCapacity(
 						@Parameter(name = "plantID", description = "ID of the plant", required = true, example = "1")
-						@PathVariable("plantID") int id,
+						@PathVariable("plantID") String id,
 						@Parameter(name = "Date", description = "Date (DDMMYYYY)", required = true, example = "01012024")
 						@RequestParam("Date") @DateTimeFormat(pattern="ddMMyyyy") LocalDate fromDate,
 						@Parameter(name="token",description = "Authorization token in plain text", required = true)
@@ -355,7 +355,7 @@ public class EmployeeController {
 						@RequestParam("token") String token){
 					try {
 						int containers = dumpsterService.assignDumpsterPlant(plant_id, id, token);			
-						long capacity = plantService.checkPlantCapacity(token, plant_id, LocalDate.now());
+						long capacity = plantService.checkPlantCapacity(token, Long.toString(plant_id), LocalDate.now());
 						if(capacity >= containers) {
 							plantService.updatePlant(plant_id, containers);
 							boolean r = true;
@@ -415,7 +415,7 @@ public class EmployeeController {
 		return new StatusDTO(pc,statusMap);
 	}
 	
-	private PlantCapacityDTO PlantCapacityToDTO(int id,int capacity) {
+	private PlantCapacityDTO PlantCapacityToDTO(String id,int capacity) {
 
 		return new PlantCapacityDTO(id,capacity);
 	}

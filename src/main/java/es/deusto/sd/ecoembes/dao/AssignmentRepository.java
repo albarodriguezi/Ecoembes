@@ -12,11 +12,11 @@ import es.deusto.sd.ecoembes.entity.UsageId;
 
 
 @Repository
-public interface AssignmentRepository {
-	List<Assignment> findAssignmentsByDumpster(long dumpsterId);
+public interface AssignmentRepository extends JpaRepository<Assignment, Long>{
+	List<Assignment> findAssignmentsByDumpster_Id(long dumpsterId);
 	
-	List<Assignment> findAssignmentsByPlant(long plantId);
+	List<Assignment> findAssignmentsByPlantId(long plantId);
 	
-	List<Assignment> findAssignmentsByEmployee(long employeeId);
+	List<Assignment> findAssignmentsByEmployee_Id(long employeeId);
 }
 
