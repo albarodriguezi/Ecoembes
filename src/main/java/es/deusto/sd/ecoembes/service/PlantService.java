@@ -32,10 +32,10 @@ public class PlantService {
         return plantRepository.get(plantId);
     }
     
-    public int checkPlantCapacity(String token, String type, LocalDate date) {
+    public int checkPlantCapacity(String token, String type, long plantId, LocalDate date) {
 		try {
 			IPlantGateway plantGateway = PlantGatewayFactory.create(type);
-			return plantGateway.getCapacity(date.toString());
+			return plantGateway.getCapacity(String.valueOf(plantId), date.toString());
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -25,6 +25,7 @@ import es.deusto.sd.ecoembes.entity.Dumpster;
 import es.deusto.sd.ecoembes.entity.Employee;
 import es.deusto.sd.ecoembes.entity.Plant;
 import es.deusto.sd.ecoembes.entity.Registry;
+import es.deusto.sd.ecoembes.external.PlantGatewayFactory;
 import es.deusto.sd.ecoembes.service.AuthService;
 import es.deusto.sd.ecoembes.service.DumpsterService;
 import es.deusto.sd.ecoembes.service.PlantService;
@@ -35,7 +36,10 @@ public class DataInitializer {
 	private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
 	
     @Bean
-    CommandLineRunner initData(PlantService plantService, DumpsterService dumpsterService,AuthService AuthService,  EmployeeRepository employeeRepository, DumpsterRepository dumpsterRepository, AssignmentRepository assignmentRepository, UsageRepository usageRepository) {
+    CommandLineRunner initData(PlantService plantService, DumpsterService dumpsterService, AuthService AuthService, 
+            EmployeeRepository employeeRepository, DumpsterRepository dumpsterRepository, 
+            AssignmentRepository assignmentRepository, UsageRepository usageRepository,
+            PlantGatewayFactory plantGatewayFactory) {
 		return args -> {	
 			
 			//create 2 plants
@@ -126,6 +130,24 @@ public class DataInitializer {
 	        dumpsterService.addUsage(u10);
 	        logger.info("Usage records saved!");
 
+	        logger.info("--- PRUEBA DE CONEXIÓN A SERVIDORES EXTERNOS ---");
+		     
+		     try {
+		         es.deusto.sd.ecoembes.external.IPlantGateway socketGw = plantGatewayFactory.create("CONT_SOCKET");
+		         
+		         logger.info("Gateway SOCKET (9500) creado con éxito.");
+		     } catch (Exception e) {
+		         logger.error("ERROR al crear/conectar al SOCKET (9500). ¿Está el servidor de Sockets ejecutándose? Mensaje: {}", e.getMessage());
+		     }
+	
+		     try {
+		         es.deusto.sd.ecoembes.external.IPlantGateway plasGw = plantGatewayFactory.create("PLASSB");
+		         
+		         logger.info("Gateway PLASSB (8080) creado con éxito.");
+		     } catch (Exception e) {
+		         logger.error("ERROR al crear/conectar a PLASSB (8080). ¿Está el servidor PlasSB ejecutándose? Mensaje: {}", e.getMessage());
+		     }
+	        
 			// calendar
 			Calendar calendar = Calendar.getInstance();
 			

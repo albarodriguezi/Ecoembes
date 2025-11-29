@@ -24,8 +24,9 @@ public class PlasSBGateway implements IPlantGateway {
     }
 
     @Override
-    public int getCapacity(String date) throws Exception {
-        String url = baseUrl + "/capacity?date=" + date;
+    public int getCapacity(String plantId, String date) throws Exception {
+        // CORRECCIÓN: La URL ahora incluye el ID de la planta para que el servidor externo sepa a quién consultar.
+        String url = baseUrl + "/plant/" + plantId + "/capacity?date=" + date;
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -35,19 +36,23 @@ public class PlasSBGateway implements IPlantGateway {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        // Check HTTP status
+        // Verificamos el estado HTTP
         if (response.statusCode() != 200) {
-            throw new RuntimeException("PlasSB server error: HTTP " + response.statusCode());
+            // Incluimos el cuerpo de la respuesta en el error para mejor depuración
+            throw new RuntimeException("Error del servidor PlasSB: HTTP " + response.statusCode() + " | Cuerpo: " + response.body());
         }
 
-        // Parse JSON using Jackson
+        // Parseamos el JSON usando Jackson
         Map<String, Object> jsonMap = objectMapper.readValue(response.body(), Map.class);
 
         if (!jsonMap.containsKey("capacity")) {
-            throw new RuntimeException("Invalid JSON from PlasSB: missing 'capacity'");
+            throw new RuntimeException("JSON inválido de PlasSB: falta 'capacity'");
         }
+        
+        // Usamos Number para un casteo más robusto (maneja tanto Integer como Double)
+        Number capacityNumber = (Number) jsonMap.get("capacity");
 
-        return (Integer) jsonMap.get("capacity");
+        return capacityNumber.intValue();
     }
 
     @Override

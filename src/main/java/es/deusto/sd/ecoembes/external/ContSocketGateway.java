@@ -19,18 +19,24 @@ public class ContSocketGateway implements IPlantGateway {
 
     private String sendMessage(String msg) throws IOException {
         try (
+            // Creamos la conexión socket
             Socket socket = new Socket(host, port);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)
         ) {
+            // Enviamos el mensaje
             out.println(msg);
+            // Esperamos la respuesta
             return in.readLine();
         }
     }
 
     @Override
-    public int getCapacity(String date) throws IOException {
-        String response = sendMessage("GET_CAPACITY;" + date);
+    public int getCapacity(String plantId, String date) throws IOException {
+        // CORRECCIÓN: Incluimos el plantId en el mensaje para el servidor Socket. 
+        // Asumimos que el formato de mensaje es: GET_CAPACITY;[plantId];[date]
+        String response = sendMessage("GET_CAPACITY;" + plantId + ";" + date);
+        // El servidor Socket debe devolver un String que se puede parsear a Integer
         return Integer.parseInt(response);
     }
 

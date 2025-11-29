@@ -355,7 +355,7 @@ public class EmployeeController {
 						@RequestParam("token") String token){
 					try {
 						int containers = dumpsterService.assignDumpsterPlant(plant_id, id, token);			
-						long capacity = plantService.checkPlantCapacity(token, Long.toString(plant_id), LocalDate.now());
+						long capacity = plantService.checkPlantCapacity(token, Long.toString(plant_id), capacity, LocalDate.now());
 						if(capacity >= containers) {
 							plantService.updatePlant(plant_id, containers);
 							boolean r = true;
