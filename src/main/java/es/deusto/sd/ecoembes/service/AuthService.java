@@ -58,6 +58,8 @@ public class AuthService {
     
     // Method to get the user based on the token
     public Employee getUserByToken(String token) {
+    	System.out.println("Getting user by token: " + token);
+    	System.out.println(tokenStore.toString());
         return tokenStore.get(token); 
     }
     

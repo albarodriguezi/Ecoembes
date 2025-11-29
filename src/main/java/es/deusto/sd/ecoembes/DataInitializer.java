@@ -101,29 +101,29 @@ public class DataInitializer {
 	        
 	        //create usage (dumpsters assigned to plants over time)
 
-	        Registry u1 = new Registry(LocalDate.of(2024, 1, 15),d1.getStatus() ,d1); // Bilbao - Organic
-	        Registry u2 = new Registry(LocalDate.of(2024, 2, 10),d2.getStatus() ,d2); // Bilbao - Plastic
-	        Registry u3 = new Registry(LocalDate.of(2024, 3, 5),d3.getStatus() ,d3);  // Bilbao - Glass
-	        Registry u4 = new Registry(LocalDate.of(2024, 1, 20),d4.getStatus() ,d4); // Pamplona - Paper
-	        Registry u5 = new Registry(LocalDate.of(2024, 2, 18),d5.getStatus() ,d5); // Pamplona - Metal
+	        Registry u1 = new Registry(LocalDate.of(2024, 1, 15),"RED" ,d1); // Bilbao - Organic
+	        Registry u2 = new Registry(LocalDate.of(2024, 2, 10),"GREEN" ,d2); // Bilbao - Plastic
+	        Registry u3 = new Registry(LocalDate.of(2024, 1, 15),"ORANGE" ,d3);  // Bilbao - Glass
+	        Registry u4 = new Registry(LocalDate.of(2024, 1, 20),"GREEN" ,d4); // Pamplona - Paper
+	        Registry u5 = new Registry(LocalDate.of(2024, 2, 18),"ORANGE" ,d5); // Pamplona - Metal
 
 	        // mixtos
-	        Registry u6 = new Registry(LocalDate.of(2024, 4, 25),d1.getStatus(), d1);
-	        Registry u7 = new Registry(LocalDate.of(2024, 5, 10),d2.getStatus(), d2);
-	        Registry u8 = new Registry(LocalDate.of(2024, 6, 2),d4.getStatus(), d4);
-	        Registry u9 = new Registry(LocalDate.of(2024, 7, 12),d5.getStatus(), d5);
-	        Registry u10 = new Registry(LocalDate.of(2024, 8, 3),d3.getStatus(), d3);
+	        Registry u6 = new Registry(LocalDate.of(2024, 4, 25),"ORANGE", d1);
+	        Registry u7 = new Registry(LocalDate.of(2024, 5, 10),"RED", d2);
+	        Registry u8 = new Registry(LocalDate.of(2024, 6, 2),"ORANGE", d4);
+	        Registry u9 = new Registry(LocalDate.of(2024, 7, 12),"RED", d5);
+	        Registry u10 = new Registry(LocalDate.of(2024, 8, 3),"GREEN", d3);
 
-	        DumpsterService.addUsage(u1);
-	        DumpsterService.addUsage(u2);
-	        DumpsterService.addUsage(u3);
-	        DumpsterService.addUsage(u4);
-	        DumpsterService.addUsage(u5);
-	        DumpsterService.addUsage(u6);
-	        DumpsterService.addUsage(u7);
-	        DumpsterService.addUsage(u8);
-	        DumpsterService.addUsage(u9);
-	        DumpsterService.addUsage(u10);
+	        dumpsterService.addUsage(u1);
+	        dumpsterService.addUsage(u2);
+	        dumpsterService.addUsage(u3);
+	        dumpsterService.addUsage(u4);
+	        dumpsterService.addUsage(u5);
+	        dumpsterService.addUsage(u6);
+	        dumpsterService.addUsage(u7);
+	        dumpsterService.addUsage(u8);
+	        dumpsterService.addUsage(u9);
+	        dumpsterService.addUsage(u10);
 	        logger.info("Usage records saved!");
 
 			// calendar
