@@ -231,7 +231,7 @@ public class EmployeeController {
 			}
 		)
 		 
-		@GetMapping("/dumpster/{dumpsterID}/usage")
+		@GetMapping("/dumpsters/{dumpsterID}/usages")
 		public ResponseEntity<UsageDTO> queryDumpsterUsage(
 				@Parameter(name = "dumpsterID", description = "Id of the dumpster", required = true, example = "1")
 				@PathVariable("dumpsterID") long id,
@@ -275,7 +275,7 @@ public class EmployeeController {
 					}
 				)
 				 
-				@GetMapping("/dumpster/{PC}/status")
+				@GetMapping("/dumpsters/{PC}/statuses")
 				public ResponseEntity<StatusDTO> checkDumpsterStatus(
 						@Parameter(name = "PC", description = "Postal Code of the dumpsters", required = true, example = "28001")
 						@PathVariable("PC") int id,
@@ -311,7 +311,7 @@ public class EmployeeController {
 					}
 				)
 				 
-				@GetMapping("/plant/{plantID}/capacity")
+				@GetMapping("/plants/{plantID}/capacities")
 				public ResponseEntity<PlantCapacityDTO> checkPlantCapacity(
 				    @Parameter(name = "plantID", description = "ID of the plant", required = true, example = "1")
 				    @PathVariable("plantID") String id,
@@ -350,7 +350,7 @@ public class EmployeeController {
 					}
 				)
 				 
-				@GetMapping("/dumpster/{dumpsterID}/assignment")
+				@GetMapping("/dumpsters/{dumpsterID}/assignments")
 				public ResponseEntity<Boolean> assignDumpsterPlant(
 						@Parameter(name = "dumpsterID", description = "Id of the dumpster", required = true, example = "1")
 						@PathVariable("dumpsterID") long id,
@@ -391,7 +391,7 @@ public class EmployeeController {
 					}
 				)
 				 
-				@PutMapping("/dumpster/{dumpsterID}")
+				@PutMapping("/dumpsters/{dumpsterID}")
 				public ResponseEntity<DumpsterDTO> updateDumpster(
 						@Parameter(name = "dumpsterID", description = "Id of the dumpster", required = true, example = "1")
 						@PathVariable("dumpsterID") long id,
