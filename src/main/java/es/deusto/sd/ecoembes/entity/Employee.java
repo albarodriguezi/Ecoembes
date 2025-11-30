@@ -10,105 +10,85 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Version;
 @Entity
 public class Employee {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
-	@Column(nullable = false)
-	private String name;
-	@Column(nullable = false)
-	private String email;
-	@Column(nullable = false)
-	private String password;
-	@Column(nullable = false)
-	private LocalDate date_birth;
-	@Column(nullable = false)
-	private double salary;
-	
-	public Employee() {}
-	
-	public Employee(long id, String name, String email, String password, LocalDate date_birth, double salary) {
-		this.id = id;
-		this.name = name;
-		this.email = email;
-		this.password = password;
-		this.date_birth = date_birth;
-		this.salary = salary;
-	}
-	
-	public boolean checkPassword(String password) {
-		return this.password.equals(password);
-	}
 
-	public long getId() {
-		return id;
-	}
+    @Id
+    private long id;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    @Column(nullable = false)
+    private String name;
 
-	public String getName() {
-		return name;
-	}
+    @Column(nullable = false)
+    private String email;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @Column(nullable = false)
+    private String password;
 
-	public String getEmail() {
-		return email;
-	}
+    @Column(nullable = false)
+    private LocalDate date_birth;
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    @Column(nullable = false)
+    private double salary;
 
-	public String getPassword() {
-		return password;
-	}
+    @Version
+    private int version; // Control optimista
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public Employee() {}
 
-	public LocalDate getDate_birth() {
-		return date_birth;
-	}
+    public Employee(long id, String name, String email, String password, LocalDate date_birth, double salary) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.date_birth = date_birth;
+        this.salary = salary;
+    }
 
-	public void setDate_birth(LocalDate date_birth) {
-		this.date_birth = date_birth;
-	}
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
+    }
 
-	public double getSalary() {
-		return salary;
-	}
+    // Getters y setters
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
 
-	public void setSalary(double salary) {
-		this.salary = salary;
-	}
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
+    public LocalDate getDate_birth() { return date_birth; }
+    public void setDate_birth(LocalDate date_birth) { this.date_birth = date_birth; }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(date_birth, email, id, name, password, salary);
-	}
+    public double getSalary() { return salary; }
+    public void setSalary(double salary) { this.salary = salary; }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Employee other = (Employee) obj;
-		return Objects.equals(date_birth, other.date_birth) &&  Objects.equals(email, other.email) && id == other.id && Objects.equals(name, other.name)
-				&& Objects.equals(password, other.password) &&  Double.doubleToLongBits(salary) == Double.doubleToLongBits(other.salary);
-	}
-	
-	
+    public int getVersion() { return version; }
+    public void setVersion(int version) { this.version = version; }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(date_birth, email, id, name, password, salary);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Employee other = (Employee) obj;
+        return id == other.id
+            && Double.doubleToLongBits(salary) == Double.doubleToLongBits(other.salary)
+            && Objects.equals(name, other.name)
+            && Objects.equals(email, other.email)
+            && Objects.equals(password, other.password)
+            && Objects.equals(date_birth, other.date_birth);
+    }
 }

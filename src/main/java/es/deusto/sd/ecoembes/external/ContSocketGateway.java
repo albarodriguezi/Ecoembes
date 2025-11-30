@@ -35,7 +35,7 @@ public class ContSocketGateway implements IPlantGateway {
     public int getCapacity(String plantId, String date) throws IOException {
         // CORRECCIÓN: Incluimos el plantId en el mensaje para el servidor Socket. 
         // Asumimos que el formato de mensaje es: GET_CAPACITY;[plantId];[date]
-        String response = sendMessage("GET_CAPACITY;" + plantId + ";" + date);
+        String response = sendMessage("GET_CAPACITY;" + date + ";" + plantId);
         // El servidor Socket debe devolver un String que se puede parsear a Integer
         return Integer.parseInt(response);
     }

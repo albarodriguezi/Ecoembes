@@ -361,10 +361,11 @@ public class EmployeeController {
 					    @Parameter(name = "type", description = "Gateway type (PLASSB or CONT_SOCKET)", required = true, example = "PLASSB")
 					    @RequestParam("type") String type) {
 					try {
-						int containers = dumpsterService.assignDumpsterPlant(plant_id, id, token);			
+						int containers = dumpsterService.getDumpsterContainers(plant_id, id, token);			
 						long capacity = plantService.checkPlantCapacity(token, type, plant_id, LocalDate.now());
 						if(capacity >= containers) {
-							plantService.updatePlant(plant_id, containers);
+							plantService.updatePlant(plant_id, capacity-containers);
+							dumpsterService.assignDumpsterPlant(plant_id, id, token);
 							boolean r = true;
 							return new ResponseEntity<>(r, HttpStatus.OK);
 						} else {

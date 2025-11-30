@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import es.deusto.sd.ecoembes.dao.AssignmentRepository;
 import es.deusto.sd.ecoembes.dao.DumpsterRepository;
 import es.deusto.sd.ecoembes.dao.UsageRepository;
+import es.deusto.sd.ecoembes.entity.Assignment;
 import es.deusto.sd.ecoembes.entity.Dumpster;
 import es.deusto.sd.ecoembes.entity.Employee;
 import es.deusto.sd.ecoembes.entity.Plant;
@@ -118,11 +119,19 @@ public class DumpsterService {
 
 
     
-    public int assignDumpsterPlant(long RP_id, long d_id, String token) {
+    public int getDumpsterContainers(long RP_id, long d_id, String token) {
 
 
         Dumpster dumpster = dumpsterRepositoryJPA.findById(d_id).orElse(null);
 		return dumpster.getContainers();
+    }
+    
+    public void assignDumpsterPlant(long RP_id, long d_id, String token) {
+    	Employee employee = authService.getUserByToken(token);
+    	Dumpster dumpster = dumpsterRepositoryJPA.findById(d_id).orElse(null);
+        Assignment assignment = new Assignment(employee,dumpster, RP_id);
+		assignmentRepository.save(assignment);
+		System.out.println("Assigned dumpster ID " + d_id + " to plant ID " + RP_id + " by employee " + employee.getEmail());
     }
 
     public void addUsage(Registry usage) {

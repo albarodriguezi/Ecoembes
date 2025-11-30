@@ -1,6 +1,7 @@
 package es.deusto.sd.ecoembes.service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,17 +34,21 @@ public class PlantService {
     }
     
     public int checkPlantCapacity(String token, String type, long plantId, LocalDate date) {
-		try {
-			IPlantGateway plantGateway = PlantGatewayFactory.create(type);
-			return plantGateway.getCapacity(String.valueOf(plantId), date.toString());
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+        try {
+            IPlantGateway plantGateway = PlantGatewayFactory.create(type);
 
-		return -1;
+            // Convert LocalDate to ddMMyyyy (expected by PlasSB)
+            String formattedDate = date.format(DateTimeFormatter.ofPattern("ddMMyyyy"));
+
+            // PlasSB returns a simple number → parse the String into an int
+            return  plantGateway.getCapacity(String.valueOf(plantId), formattedDate);
+
+            //return Integer.parseInt(rawCapacity);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
 
