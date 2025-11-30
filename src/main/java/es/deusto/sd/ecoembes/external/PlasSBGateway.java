@@ -25,7 +25,7 @@ public class PlasSBGateway implements IPlantGateway {
 
     @Override
     public int getCapacity(String plantId, String date) throws Exception {
-        String url = baseUrl + "plant/" + plantId + "/capacity?date=" + date;
+        String url = baseUrl + "plants/" + plantId + "/capacities?date=" + date;
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
