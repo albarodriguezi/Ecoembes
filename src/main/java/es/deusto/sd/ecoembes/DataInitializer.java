@@ -130,23 +130,23 @@ public class DataInitializer {
 	        dumpsterService.addUsage(u10);
 	        logger.info("Usage records saved!");
 
-	        logger.info("--- PRUEBA DE CONEXIÓN A SERVIDORES EXTERNOS ---");
-		     
-		     try {
-		         es.deusto.sd.ecoembes.external.IPlantGateway socketGw = plantGatewayFactory.create("CONT_SOCKET");
-		         
-		         logger.info("Gateway SOCKET (9500) creado con éxito.");
-		     } catch (Exception e) {
-		         logger.error("ERROR al crear/conectar al SOCKET (9500). ¿Está el servidor de Sockets ejecutándose? Mensaje: {}", e.getMessage());
-		     }
-	
-		     try {
-		         es.deusto.sd.ecoembes.external.IPlantGateway plasGw = plantGatewayFactory.create("PLASSB");
-		         
-		         logger.info("Gateway PLASSB (8080) creado con éxito.");
-		     } catch (Exception e) {
-		         logger.error("ERROR al crear/conectar a PLASSB (8080). ¿Está el servidor PlasSB ejecutándose? Mensaje: {}", e.getMessage());
-		     }
+	        logger.info("--- TESTING CONNECTION TO EXTERNAL SERVERS ---");
+	         
+	        try {
+	            es.deusto.sd.ecoembes.external.IPlantGateway socketGw = plantGatewayFactory.create("CONT_SOCKET");
+	            
+	            logger.info("SOCKET Gateway (9500) successfully created.");
+	        } catch (Exception e) {
+	            logger.error("ERROR creating/connecting to SOCKET (9500). Is the Socket server running? Message: {}", e.getMessage());
+	        }
+
+	        try {
+	            es.deusto.sd.ecoembes.external.IPlantGateway plasGw = plantGatewayFactory.create("PLASSB");
+	            
+	            logger.info("PLASSB Gateway (8080) successfully created.");
+	        } catch (Exception e) {
+	            logger.error("ERROR creating/connecting to PLASSB (8080). Is the PlasSB server running? Message: {}", e.getMessage());
+	        }
 	        
 			// calendar
 			Calendar calendar = Calendar.getInstance();
