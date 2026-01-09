@@ -22,15 +22,15 @@ public class Assignment {
     @ManyToOne
     private Dumpster dumpster;
 
-    @Column(nullable = false)
-    private Long plantId;
+    @ManyToOne
+    private Plant plant;
 	
 	public Assignment() {}
 	
-	public Assignment(Employee employee, Dumpster dumpster, long plant) {
+	public Assignment(Employee employee, Dumpster dumpster, Plant plant) {
 		this.employee = employee;
 		this.dumpster = dumpster;
-		this.plantId = plant;
+		this.plant = plant;
 	}
 
 	public Employee getEmployee() {
@@ -48,17 +48,17 @@ public class Assignment {
 		this.dumpster = dumpster;
 	}
 
-	public Long getPlant() {
-		return plantId;
+	public Plant getPlant() {
+		return plant;
 	}
 
-	public void setPlant(long plant) {
-		this.plantId = plant;
+	public void setPlant(Plant plant) {
+		this.plant = plant;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(employee, dumpster, plantId);
+		return Objects.hash(employee, dumpster, plant);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class Assignment {
 			return false;
 		Assignment other = (Assignment) obj;
 		return Objects.equals(employee, other.employee) && Objects.equals(dumpster, other.dumpster)
-				&& Objects.equals(plantId, other.plantId);
+				&& Objects.equals(plant, other.plant);
 	}
 	
 	

@@ -2,11 +2,23 @@ package es.deusto.sd.ecoembes.entity;
 
 import java.util.Objects;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "plants")
 public class Plant {
+	@Id
 	private long id;
+	@Column(nullable = false)
 	private int PC;
+	@Column(nullable = false)
 	private String city;
+	@Column(nullable = false)
 	private String address;
+	@Column(nullable = false)
 	private int capacity;
 	
 	public Plant() {}

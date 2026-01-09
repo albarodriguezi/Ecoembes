@@ -10,17 +10,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Component
+
 public class PlasSBGateway implements IPlantGateway {
 
     private final String baseUrl;
     private final HttpClient client;
-    private final ObjectMapper objectMapper;
 
-    public PlasSBGateway(@Value("${plassb.base.url}") String baseUrl) {
+    public PlasSBGateway(String baseUrl) {
         this.baseUrl = baseUrl;
         this.client = HttpClient.newHttpClient();
-        this.objectMapper = new ObjectMapper();
     }
 
     @Override
