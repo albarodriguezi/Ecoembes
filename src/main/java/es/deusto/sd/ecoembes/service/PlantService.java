@@ -54,7 +54,19 @@ public class PlantService {
         }
     }
 
+    public String notifyAssignment(long dumpster, int containers, String type) {
+        try {
+			IPlantGateway plantGateway = PlantGatewayFactory.create(type);
 
+			// Notify the plant about the assignment
+			return plantGateway.notifyAssignment(dumpster, containers);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Error notifying assignment";
+		}
+    }
+    
 public boolean updatePlant(long RP_id, long containers) {
     Plant plant = plantRepositoryJPA.findById(RP_id).orElse(null);
     plant.setCapacity((int)(plant.getCapacity()-containers));

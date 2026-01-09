@@ -131,6 +131,7 @@ public class DumpsterService {
     	Dumpster dumpster = dumpsterRepositoryJPA.findById(d_id).orElse(null);
         Assignment assignment = new Assignment(employee,dumpster, plant);
 		assignmentRepository.save(assignment);
+		
 		System.out.println("Assigned dumpster ID " + d_id + " to plant ID " + plant + " by employee " + employee.getEmail());
     }
 

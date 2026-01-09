@@ -6,6 +6,6 @@ public interface IPlantGateway {
 
     int getCapacity(String plantId, String date) throws Exception;
 
-    String notifyAssignment(int dumpsters, int containers) throws Exception;
+    String notifyAssignment(long dumpsters, int containers) throws Exception;
 }
 
