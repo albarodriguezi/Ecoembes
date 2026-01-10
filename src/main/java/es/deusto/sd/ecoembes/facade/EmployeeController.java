@@ -71,20 +71,20 @@ public class EmployeeController {
 	public ResponseEntity<List<CategoryDTO>> getAllCategories() {
 		try {
 			List<Category> categories = auctionsService.getCategories();
-			
+
 			if (categories.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 
 			List<CategoryDTO> dtos = new ArrayList<>();
 			categories.forEach(category -> dtos.add(categoryToDTO(category)));
-			
+
 			return new ResponseEntity<>(dtos, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	*/
+	 */
 
 	// GET articles by category name
 	/* 
@@ -99,7 +99,7 @@ public class EmployeeController {
 			@ApiResponse(responseCode = "500", description = "Internal server error")
 		}
 	)
-	
+
 	@GetMapping("/categories/{categoryName}/articles")
 	public ResponseEntity<List<ArticleDTO>> getArticlesByCategory(
 			@Parameter(name = "categoryName", description = "Name of the category", required = true, example = "Electronics")
@@ -108,20 +108,20 @@ public class EmployeeController {
 			@RequestParam("currency") String currentCurrency) {
 		try {
 			List<Article> articles = auctionsService.getArticlesByCategoryName(category);
-						
+
 			if (articles.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 
 			Optional<Float> exchangeRate = currencyService.getExchangeRate(currentCurrency);
-			
+
 			if (!exchangeRate.isPresent()) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
-			
+
 			List<ArticleDTO> dtos = new ArrayList<>();
 			articles.forEach(article -> dtos.add(articleToDTO(article, exchangeRate.get(), currentCurrency)));
-			
+
 			return new ResponseEntity<>(dtos, HttpStatus.OK);
 		} catch (RuntimeException e) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -129,7 +129,7 @@ public class EmployeeController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	// GET details of an article by ID
 	@Operation(
 		summary = "Get the details of an article by its ID",
@@ -150,16 +150,16 @@ public class EmployeeController {
 			@RequestParam("currency") String currentCurrency) {
 		try {
 			Article article = auctionsService.getArticleById(id);			
-			
+
 			if (article != null) {				
 				Optional<Float> exchangeRate = currencyService.getExchangeRate(currentCurrency);
-				
+
 				if (!exchangeRate.isPresent()) {
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
-				
+
 				ArticleDTO dto = articleToDTO(article, exchangeRate.get(), currentCurrency);
-				
+
 				return new ResponseEntity<>(dto, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -168,274 +168,259 @@ public class EmployeeController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	*/
+	 */
 	// POST to make a bid on an article
 	@Operation(
-	    summary = "Create a dumpster",
-	    //description = "Allow an employee to crate a dumpster by providing its location and capacity.",
-	    responses = {
-	        @ApiResponse(responseCode = "204", description = "No Content: dumpster created successfully"),
-			@ApiResponse(responseCode = "400", description = "Bad Request: Error in the request parameters"),
-	        @ApiResponse(responseCode = "401", description = "Unauthorized: Employee not authenticated"),
-	        @ApiResponse(responseCode = "404", description = "Not Found: Dumpster not found"),
-	        @ApiResponse(responseCode = "409", description = "Conflict: Conflict with the current state of the resource"),
-	        @ApiResponse(responseCode = "500", description = "Internal server error")
-	    }
-	)		
+			summary = "Create a dumpster",
+			//description = "Allow an employee to crate a dumpster by providing its location and capacity.",
+			responses = {
+					@ApiResponse(responseCode = "204", description = "No Content: dumpster created successfully"),
+					@ApiResponse(responseCode = "400", description = "Bad Request: Error in the request parameters"),
+					@ApiResponse(responseCode = "401", description = "Unauthorized: Employee not authenticated"),
+					@ApiResponse(responseCode = "404", description = "Not Found: Dumpster not found"),
+					@ApiResponse(responseCode = "409", description = "Conflict: Conflict with the current state of the resource"),
+					@ApiResponse(responseCode = "500", description = "Internal server error")
+			}
+			)		
 	@PostMapping("/dumpsters")
 	public ResponseEntity<Void> createDumpster(
-			@Parameter(name = "dumpsterID", description = "ID of the dumpster", required = true, example = "10")		
 			@RequestParam("dumpsterID") long id,
-			@Parameter(name = "dumpsterPC", description = "postal code of the dumpster", required = true, example = "10001")
-    		@RequestParam("dumpsterPC") int pc,
-    		@Parameter(name = "dumpsterCity", description = "city of the dumpster", required = true, example = "pamplona")
+			@RequestParam("dumpsterPC") int pc,
 			@RequestParam("dumpsterCity") String dumpsterCity,
-			@Parameter(name = "dumpsterAddress", description = "address of the dumpster", required = true, example = "pio XII")
 			@RequestParam("dumpsterAddress") String dumpsterAddress,
-			@Parameter(name = "dumpsterType", description = "type of the dumpster", required = true, example = "paper")
 			@RequestParam("dumpsterType") String dumpsterTy,
-			@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Authorization token in plain text", required = true)
-    		@RequestBody String token) { 
-	    try {	    	
-	    	Employee user = authService.getUserByToken(token);
-	    	System.out.println("User trying to create dumpster: " + user);
-	    	if (user == null) {
-	    		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-	    	}
-	    	
-			
-	        dumpsterService.createDumpster(id, pc, dumpsterCity, dumpsterAddress, dumpsterTy,token);
-	        
-	        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	    } catch (Exception e) {
-	        switch (e.getMessage()) {
-	            case "Article not found":
-	                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	            case "Bid amount must be greater than the current price":
-	                return new ResponseEntity<>(HttpStatus.CONFLICT);
-	            default:
-	                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-	        }
-	    }
+			@RequestParam("token") String token) {
+		try {
+			Employee user = authService.getUserByToken(token);
+			if (user == null) {
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			}
+
+			dumpsterService.createDumpster(id, pc, dumpsterCity, dumpsterAddress, dumpsterTy, token);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
-	
-	
+
+
+
 	// GET details of an article by ID
-		@Operation(
+	@Operation(
 			summary = "Get the usage of a dumpster in a timespan by its ID",
 			//description = "Returns the details of the article with the specified ID",
 			responses = {
-				@ApiResponse(responseCode = "200", description = "OK: Usage details retrieved successfully"),
-				@ApiResponse(responseCode = "400", description = "Bad Request: Error in the request parameters"),
-				@ApiResponse(responseCode = "404", description = "Not Found: Dumpster not found"),
-				@ApiResponse(responseCode = "500", description = "Internal server error")
+					@ApiResponse(responseCode = "200", description = "OK: Usage details retrieved successfully"),
+					@ApiResponse(responseCode = "400", description = "Bad Request: Error in the request parameters"),
+					@ApiResponse(responseCode = "404", description = "Not Found: Dumpster not found"),
+					@ApiResponse(responseCode = "500", description = "Internal server error")
 			}
-		)
-		 
-		@GetMapping("/dumpsters/{dumpsterID}/usages")
-		public ResponseEntity<UsageDTO> queryDumpsterUsage(
-				@Parameter(name = "dumpsterID", description = "Id of the dumpster", required = true, example = "1")
-				@PathVariable("dumpsterID") long id,
-				@Parameter(name = "FromDate", description = "Start date (DDMMYYYY)", required = true, example = "01012024")
-				@RequestParam("FromDate") @DateTimeFormat(pattern="ddMMyyyy") LocalDate fromDate,
-				@Parameter(name = "ToDate", description = "End date (DDMMYYYY)", required = true, example = "01042024")
-				@RequestParam("ToDate") @DateTimeFormat(pattern="ddMMyyyy") LocalDate toDate,
-				@Parameter(name="token",description = "Authorization token in plain text", required = true)
-				@RequestParam("token") String token){
-			try {
-				List<Registry> usage = dumpsterService.queryDumpsterUsage(token, id, fromDate, toDate);	
-				ArrayList<Registry> usageList = new ArrayList<>(usage);
-				for(Registry r : usageList) {
-					if(r.getDate().isBefore(fromDate) || r.getDate().isAfter(toDate)) {
-						usage.remove(r);
-					}
+			)
+
+	@GetMapping("/dumpsters/{dumpsterID}/usages")
+	public ResponseEntity<UsageDTO> queryDumpsterUsage(
+			@Parameter(name = "dumpsterID", description = "Id of the dumpster", required = true, example = "1")
+			@PathVariable("dumpsterID") long id,
+			@Parameter(name = "FromDate", description = "Start date (DDMMYYYY)", required = true, example = "01012024")
+			@RequestParam("FromDate") @DateTimeFormat(pattern="ddMMyyyy") LocalDate fromDate,
+			@Parameter(name = "ToDate", description = "End date (DDMMYYYY)", required = true, example = "01042024")
+			@RequestParam("ToDate") @DateTimeFormat(pattern="ddMMyyyy") LocalDate toDate,
+			@Parameter(name="token",description = "Authorization token in plain text", required = true)
+			@RequestParam("token") String token){
+		try {
+			List<Registry> usage = dumpsterService.queryDumpsterUsage(token, id, fromDate, toDate);	
+			ArrayList<Registry> usageList = new ArrayList<>(usage);
+			for(Registry r : usageList) {
+				if(r.getDate().isBefore(fromDate) || r.getDate().isAfter(toDate)) {
+					usage.remove(r);
 				}
-				
-				if (usage != null) {				
-					UsageDTO dto = UsageToDTO(usageList,id);
-					
-					return new ResponseEntity<>(dto, HttpStatus.OK);
-				} else {
-					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-				}
-			} catch (Exception e) {
-				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
+
+			if (usage != null) {				
+				UsageDTO dto = UsageToDTO(usageList,id);
+
+				return new ResponseEntity<>(dto, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
-		
-		// GET details of an article by ID
-				@Operation(
-					summary = "Get the usage of a dumpster in a timespan by its ID",
-					//description = "Returns the details of the article with the specified ID",
-					responses = {
-						@ApiResponse(responseCode = "200", description = "OK: Usage details retrieved successfully"),
-						@ApiResponse(responseCode = "400", description = "Bad Request: Error in the request parameters"),
-						@ApiResponse(responseCode = "404", description = "Not Found: Dumpster not found"),
-						@ApiResponse(responseCode = "500", description = "Internal server error")
-					}
-				)
-				 
-				@GetMapping("/dumpsters/{PC}/statuses")
-				public ResponseEntity<StatusDTO> checkDumpsterStatus(
-						@Parameter(name = "PC", description = "Postal Code of the dumpsters", required = true, example = "28001")
-						@PathVariable("PC") int id,
-						@Parameter(name = "Date", description = "Date (DDMMYYYY)", required = true, example = "15012024")
-						@RequestParam("Date") @DateTimeFormat(pattern="ddMMyyyy") LocalDate fromDate,
-						@Parameter(name="token",description = "Authorization token in plain text", required = true)
-						@RequestParam("token") String token){
-					try {
-						Map<Long,String> status = dumpsterService.checkDumpsterStatus(token, id, fromDate);			
-						
-						if (status != null) {				
-							StatusDTO dto = StatusToDTO(status,id);
-							
-							return new ResponseEntity<>(dto, HttpStatus.OK);
-						} else {
-							return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-						}
-					} catch (Exception e) {
-						return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-					}
-				}
-				
-				
-				// GET details of an article by ID
-				@Operation(
-					summary = "Get the capacity of a plant by its ID",
-					//description = "Returns the details of the article with the specified ID",
-					responses = {
-						@ApiResponse(responseCode = "200", description = "OK: Usage details retrieved successfully"),
-						@ApiResponse(responseCode = "400", description = "Bad Request: Error in the request parameters"),
-						@ApiResponse(responseCode = "404", description = "Not Found: Dumpster not found"),
-						@ApiResponse(responseCode = "500", description = "Internal server error")
-					}
-				)
-				 
-				@GetMapping("/plants/{plantName}/capacities")
-				public ResponseEntity<PlantCapacityDTO> checkPlantCapacity(
-				    @Parameter(name = "plantName", description = "Name of the plant", required = true, example = "PLAS_BILBAO")
-				    @PathVariable("plantName") String plantName,
-				    @Parameter(name = "Date", description = "Date (DDMMYYYY)", required = true, example = "01012024")
-				    @RequestParam("Date") @DateTimeFormat(pattern="ddMMyyyy") LocalDate fromDate,
-				    @Parameter(name="token",description = "Authorization token in plain text", required = true)
-				    @RequestParam("token") String token) {
-					try {
-
-						Integer capacity = plantService.checkPlantCapacity(token, plantName, fromDate);
+	}
 
 
-						if (capacity != null) {
-							PlantCapacityDTO dto = PlantCapacityToDTO(plantName,capacity);
-							return new ResponseEntity<>(dto, HttpStatus.OK);
-						} else {
-							return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-						}
-					} catch (Exception e) {
-						return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-					}
+	// GET details of an article by ID
+	@Operation(
+			summary = "Get the usage of a dumpster in a timespan by its ID",
+			//description = "Returns the details of the article with the specified ID",
+			responses = {
+					@ApiResponse(responseCode = "200", description = "OK: Usage details retrieved successfully"),
+					@ApiResponse(responseCode = "400", description = "Bad Request: Error in the request parameters"),
+					@ApiResponse(responseCode = "404", description = "Not Found: Dumpster not found"),
+					@ApiResponse(responseCode = "500", description = "Internal server error")
+			}
+			)
 
-				}
-				
-				// GET details of an article by ID
-				@Operation(
-					summary = "Assign a dumpster to a plant",
-					//description = "Returns the details of the article with the specified ID",
-					responses = {
-						@ApiResponse(responseCode = "200", description = "OK: Usage details retrieved successfully"),
-						@ApiResponse(responseCode = "400", description = "Bad Request: Error in the request parameters"),
-						@ApiResponse(responseCode = "404", description = "Not Found: Dumpster not found"),
-						@ApiResponse(responseCode = "500", description = "Internal server error")
-					}
-				)
-				 
-				@GetMapping("/dumpsters/{dumpsterID}/assignments")
-				public ResponseEntity<Boolean> assignDumpsterPlant(
-						@Parameter(name = "dumpsterID", description = "Id of the dumpster", required = true, example = "1")
-						@PathVariable("dumpsterID") long id,
-						@Parameter(name = "plantName", description = "Name of the plant", required = true, example = "PLAS_BILBAO")
-						@RequestParam("plantName") String plantName,
-						@Parameter(name="token",description = "Authorization token in plain text", required = true)
-				        @RequestParam("token") String token) {
-					try {
-						int containers = dumpsterService.getDumpsterContainers(id, token);
-						int capacity = plantService.checkPlantCapacity(token, plantName, LocalDate.now());
-						if(capacity >= containers) {
-							plantService.updatePlant(plantName, containers);
-							Plant plant = plantService.getPlantByName(plantName);
-							dumpsterService.assignDumpsterPlant(plant, id, token);
-							plantService.notifyAssignment(id, containers, plantName);
-							boolean r = true;
-							return new ResponseEntity<>(r, HttpStatus.OK);
-						} else {
-							boolean r = false;
-							return new ResponseEntity<>(r, HttpStatus.OK);
-						}
-		
-					} catch (Exception e) {
-						return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-					}
-					
-				}
-				
-				// GET details of an article by ID
-				@Operation(
-					summary = "Update dumpster capacity",
-					//description = "Returns the details of the article with the specified ID",
-					responses = {
-						@ApiResponse(responseCode = "200", description = "OK: Usage details retrieved successfully"),
-						@ApiResponse(responseCode = "400", description = "Bad Request: Error in the request parameters"),
-						@ApiResponse(responseCode = "404", description = "Not Found: Dumpster not found"),
-						@ApiResponse(responseCode = "500", description = "Internal server error")
-					}
-				)
-				 
-				@PutMapping("/dumpsters/{dumpsterID}")
-				public ResponseEntity<DumpsterDTO> updateDumpster(
-						@Parameter(name = "dumpsterID", description = "Id of the dumpster", required = true, example = "1")
-						@PathVariable("dumpsterID") long id,
-						@Parameter(name = "Containers", description = "Estimated number of containers", required = true, example = "100")
-						@RequestParam("Containers") int containers,
-						@Parameter(name = "Token", description = "Authorization token in plain text", required = true)
-						@RequestParam("Token") String token
-						){
+	@GetMapping("/dumpsters/{PC}/statuses")
+	public ResponseEntity<StatusDTO> checkDumpsterStatus(
+			@Parameter(name = "PC", description = "Postal Code of the dumpsters", required = true, example = "28001")
+			@PathVariable("PC") int id,
+			@Parameter(name = "Date", description = "Date (DDMMYYYY)", required = true, example = "15012024")
+			@RequestParam("Date") @DateTimeFormat(pattern="ddMMyyyy") LocalDate fromDate,
+			@Parameter(name="token",description = "Authorization token in plain text", required = true)
+			@RequestParam("token") String token){
+		try {
+			Map<Long,String> status = dumpsterService.checkDumpsterStatus(token, id, fromDate);			
 
-						
-						Dumpster dumpster = dumpsterService.updateDumpster(id, containers,token);
-				        
-						if (dumpster != null) {				
-							DumpsterDTO dto = DumpsterToDTO(id,containers,dumpster.getStatus());
-							return new ResponseEntity<>(dto, HttpStatus.OK);
-						} else {
-							return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-						}
-				}
-				
+			if (status != null) {				
+				StatusDTO dto = StatusToDTO(status,id);
+
+				return new ResponseEntity<>(dto, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
+	// GET details of an article by ID
+	@Operation(
+			summary = "Get the capacity of a plant by its ID",
+			//description = "Returns the details of the article with the specified ID",
+			responses = {
+					@ApiResponse(responseCode = "200", description = "OK: Usage details retrieved successfully"),
+					@ApiResponse(responseCode = "400", description = "Bad Request: Error in the request parameters"),
+					@ApiResponse(responseCode = "404", description = "Not Found: Dumpster not found"),
+					@ApiResponse(responseCode = "500", description = "Internal server error")
+			}
+			)
+
+	@GetMapping("/plants/{plantName}/capacities")
+	public ResponseEntity<PlantCapacityDTO> checkPlantCapacity(
+			@Parameter(name = "plantName", description = "Name of the plant", required = true, example = "PLAS_BILBAO")
+			@PathVariable("plantName") String plantName,
+			@Parameter(name = "Date", description = "Date (DDMMYYYY)", required = true, example = "01012024")
+			@RequestParam("Date") @DateTimeFormat(pattern="ddMMyyyy") LocalDate fromDate,
+			@Parameter(name="token",description = "Authorization token in plain text", required = true)
+			@RequestParam("token") String token) {
+		try {
+
+			Integer capacity = plantService.checkPlantCapacity(token, plantName, fromDate);
+
+
+			if (capacity != null) {
+				PlantCapacityDTO dto = PlantCapacityToDTO(plantName,capacity);
+				return new ResponseEntity<>(dto, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+
+	// GET details of an article by ID
+	@Operation(
+			summary = "Assign a dumpster to a plant",
+			//description = "Returns the details of the article with the specified ID",
+			responses = {
+					@ApiResponse(responseCode = "200", description = "OK: Usage details retrieved successfully"),
+					@ApiResponse(responseCode = "400", description = "Bad Request: Error in the request parameters"),
+					@ApiResponse(responseCode = "404", description = "Not Found: Dumpster not found"),
+					@ApiResponse(responseCode = "500", description = "Internal server error")
+			}
+			)
+
+	@GetMapping("/dumpsters/{dumpsterID}/assignments")
+	public ResponseEntity<Boolean> assignDumpsterPlant(
+			@Parameter(name = "dumpsterID", description = "Id of the dumpster", required = true, example = "1")
+			@PathVariable("dumpsterID") long id,
+			@Parameter(name = "plantName", description = "Name of the plant", required = true, example = "PLAS_BILBAO")
+			@RequestParam("plantName") String plantName,
+			@Parameter(name="token",description = "Authorization token in plain text", required = true)
+			@RequestParam("token") String token) {
+		try {
+			int containers = dumpsterService.getDumpsterContainers(id, token);
+			int capacity = plantService.checkPlantCapacity(token, plantName, LocalDate.now());
+			if(capacity >= containers) {
+				plantService.updatePlant(plantName, containers);
+				Plant plant = plantService.getPlantByName(plantName);
+				dumpsterService.assignDumpsterPlant(plant, id, token);
+				plantService.notifyAssignment(id, containers, plantName);
+				boolean r = true;
+				return new ResponseEntity<>(r, HttpStatus.OK);
+			} else {
+				boolean r = false;
+				return new ResponseEntity<>(r, HttpStatus.OK);
+			}
+
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+
+	// GET details of an article by ID
+	@Operation(
+			summary = "Update dumpster capacity",
+			//description = "Returns the details of the article with the specified ID",
+			responses = {
+					@ApiResponse(responseCode = "200", description = "OK: Usage details retrieved successfully"),
+					@ApiResponse(responseCode = "400", description = "Bad Request: Error in the request parameters"),
+					@ApiResponse(responseCode = "404", description = "Not Found: Dumpster not found"),
+					@ApiResponse(responseCode = "500", description = "Internal server error")
+			}
+			)
+
+	@PutMapping("/dumpsters/{dumpsterID}")
+	public ResponseEntity<DumpsterDTO> updateDumpster(
+			@Parameter(name = "dumpsterID", description = "Id of the dumpster", required = true, example = "1")
+			@PathVariable("dumpsterID") long id,
+			@Parameter(name = "Containers", description = "Estimated number of containers", required = true, example = "100")
+			@RequestParam("Containers") int containers,
+			@Parameter(name = "Token", description = "Authorization token in plain text", required = true)
+			@RequestParam("Token") String token
+			){
+
+
+		Dumpster dumpster = dumpsterService.updateDumpster(id, containers,token);
+
+		if (dumpster != null) {				
+			DumpsterDTO dto = DumpsterToDTO(id,containers,dumpster.getStatus());
+			return new ResponseEntity<>(dto, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
 	private DumpsterDTO DumpsterToDTO(long id, int containers,String status) {
-					return new DumpsterDTO(id,containers,status);
-				}
+		return new DumpsterDTO(id,containers,status);
+	}
 	private UsageDTO UsageToDTO(List<Registry> usage,long id) {
-			return new UsageDTO(usage,id);
+		return new UsageDTO(usage,id);
 	}
 	private StatusDTO StatusToDTO(Map<Long, String> statusMap,int pc) {
 
 		return new StatusDTO(pc,statusMap);
 	}
-	
+
 	private PlantCapacityDTO PlantCapacityToDTO(String id,int capacity) {
 
 		return new PlantCapacityDTO(id,capacity);
 	}
-				
-				
+
+
 
 	/*
 	// Converts a Category to a CategoryDTO
 	private CategoryDTO categoryToDTO(Category category) {
 		return new CategoryDTO(category.getName());
 	}
-	
-	
+
+
 	// Converts an Article to an ArticleDTO
 	private ArticleDTO articleToDTO(Article article, float exchangeRate, String currency) {
 		return new ArticleDTO(article.getId(), 
@@ -448,5 +433,5 @@ public class EmployeeController {
 				              article.getOwner().getNickname(),
 				              currency);
 	}
-	*/
+	 */
 }
