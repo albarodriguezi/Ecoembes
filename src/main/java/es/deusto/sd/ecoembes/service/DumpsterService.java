@@ -126,12 +126,13 @@ public class DumpsterService {
 		return dumpster.getContainers();
     }
     
-    public void assignDumpsterPlant(long RP_id, long d_id, String token) {
+    public void assignDumpsterPlant(Plant plant, long d_id, String token) {
     	Employee employee = authService.getUserByToken(token);
     	Dumpster dumpster = dumpsterRepositoryJPA.findById(d_id).orElse(null);
-        Assignment assignment = new Assignment(employee,dumpster, RP_id);
+        Assignment assignment = new Assignment(employee,dumpster, plant);
 		assignmentRepository.save(assignment);
-		System.out.println("Assigned dumpster ID " + d_id + " to plant ID " + RP_id + " by employee " + employee.getEmail());
+		
+		System.out.println("Assigned dumpster ID " + d_id + " to plant ID " + plant + " by employee " + employee.getEmail());
     }
 
     public void addUsage(Registry usage) {

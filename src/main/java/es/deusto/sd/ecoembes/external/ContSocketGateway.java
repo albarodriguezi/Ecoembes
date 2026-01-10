@@ -42,9 +42,11 @@ public class ContSocketGateway implements IPlantGateway {
 
 
 	@Override
-	public String notifyAssignment(int dumpsters, int containers) throws Exception {
+	public String notifyAssignment(long dumpster, int containers) throws Exception {
 		// TODO Auto-generated method stub
-		return null;
+		String response = sendMessage("NOTIFY_ASSIGNMENT;" + dumpster + ";" + containers);
+		return response;
+
 	}
 
 }

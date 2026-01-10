@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import es.deusto.sd.ecoembes.dao.PlantRepository;
+import es.deusto.sd.ecoembes.dao.UsageRepository;
 import es.deusto.sd.ecoembes.entity.Dumpster;
 import es.deusto.sd.ecoembes.entity.Employee;
 import es.deusto.sd.ecoembes.entity.Plant;
@@ -17,20 +19,21 @@ import es.deusto.sd.ecoembes.external.PlantGatewayFactory;
 public class PlantService {
     
     private final AuthService authService;
-    private static Map<Long, Plant> plantRepository = new HashMap<>();
-
-    public PlantService(AuthService authService) {
+    private final PlantRepository plantRepositoryJPA;
+    
+    public PlantService(AuthService authService, PlantRepository plantRepositoryJPA) {
         this.authService = authService;
+        this.plantRepositoryJPA = plantRepositoryJPA;
     }
     
     public void addPlant(Plant plant) {
     	if (plant != null) {
-			plantRepository.putIfAbsent(plant.getId(), plant);
+			plantRepositoryJPA.save(plant);
 		}
     }
 
     public Plant getPlantById(long plantId) {
-        return plantRepository.get(plantId);
+        return plantRepositoryJPA.findById(plantId).orElse(null);
     }
     
     public int checkPlantCapacity(String token, String type, long plantId, LocalDate date) {
@@ -51,10 +54,23 @@ public class PlantService {
         }
     }
 
+    public String notifyAssignment(long dumpster, int containers, String type) {
+        try {
+			IPlantGateway plantGateway = PlantGatewayFactory.create(type);
 
+			// Notify the plant about the assignment
+			return plantGateway.notifyAssignment(dumpster, containers);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Error notifying assignment";
+		}
+    }
+    
 public boolean updatePlant(long RP_id, long containers) {
-    Plant plant = plantRepository.get(RP_id);
+    Plant plant = plantRepositoryJPA.findById(RP_id).orElse(null);
     plant.setCapacity((int)(plant.getCapacity()-containers));
+    plantRepositoryJPA.save(plant);
     
     return true;
 }

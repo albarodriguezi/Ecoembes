@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import es.deusto.sd.ecoembes.dao.AssignmentRepository;
 import es.deusto.sd.ecoembes.dao.DumpsterRepository;
 import es.deusto.sd.ecoembes.dao.EmployeeRepository;
+import es.deusto.sd.ecoembes.dao.PlantRepository;
 import es.deusto.sd.ecoembes.dao.UsageRepository;
 import es.deusto.sd.ecoembes.entity.Dumpster;
 import es.deusto.sd.ecoembes.entity.Employee;
@@ -39,7 +40,7 @@ public class DataInitializer {
     CommandLineRunner initData(PlantService plantService, DumpsterService dumpsterService, AuthService AuthService, 
             EmployeeRepository employeeRepository, DumpsterRepository dumpsterRepository, 
             AssignmentRepository assignmentRepository, UsageRepository usageRepository,
-            PlantGatewayFactory plantGatewayFactory) {
+            PlantRepository plantRepository,PlantGatewayFactory plantGatewayFactory) {
 		return args -> {	
 			
 			//create 2 plants

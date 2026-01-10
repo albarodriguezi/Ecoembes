@@ -10,17 +10,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Component
+
 public class PlasSBGateway implements IPlantGateway {
 
     private final String baseUrl;
     private final HttpClient client;
-    private final ObjectMapper objectMapper;
 
-    public PlasSBGateway(@Value("${plassb.base.url}") String baseUrl) {
+    public PlasSBGateway(String baseUrl) {
         this.baseUrl = baseUrl;
         this.client = HttpClient.newHttpClient();
-        this.objectMapper = new ObjectMapper();
     }
 
     @Override
@@ -52,8 +50,31 @@ public class PlasSBGateway implements IPlantGateway {
     }
 
     @Override
-    public String notifyAssignment(int dumpsters, int containers) throws Exception {
+    public String notifyAssignment(long dumpsters, int containers) throws Exception {
         // TODO Auto-generated method stub
-        return null;
+    	String url = baseUrl + "dumpsters/" + dumpsters + "/capacities?containers=" + containers;
+    	HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .header("Accept", "application/json")
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException(
+                "Error del servidor PlasSB: HTTP " + response.statusCode() + " | Cuerpo: " + response.body()
+            );
+        }
+
+        // 🔥 NO HAGAS JSON PARSING AQUÍ — ES SOLO UN NÚMERO
+        String body = response.body().trim();
+
+        try {
+            return body;  // <-- AHORA FUNCIONA
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Respuesta inválida, se esperaba un número pero llegó: " + body);
+        }
+        
     }
 }

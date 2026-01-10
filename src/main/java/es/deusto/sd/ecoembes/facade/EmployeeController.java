@@ -30,6 +30,7 @@ import es.deusto.sd.ecoembes.dto.StatusDTO;
 import es.deusto.sd.ecoembes.dto.UsageDTO;
 import es.deusto.sd.ecoembes.entity.Dumpster;
 import es.deusto.sd.ecoembes.entity.Employee;
+import es.deusto.sd.ecoembes.entity.Plant;
 import es.deusto.sd.ecoembes.entity.Registry;
 import es.deusto.sd.ecoembes.service.AuthService;
 import es.deusto.sd.ecoembes.service.DumpsterService;
@@ -365,7 +366,9 @@ public class EmployeeController {
 						long capacity = plantService.checkPlantCapacity(token, type, plant_id, LocalDate.now());
 						if(capacity >= containers) {
 							plantService.updatePlant(plant_id, capacity-containers);
-							dumpsterService.assignDumpsterPlant(plant_id, id, token);
+							Plant plant = plantService.getPlantById(plant_id);
+							dumpsterService.assignDumpsterPlant(plant, id, token);
+							plantService.notifyAssignment((id, containers, type);
 							boolean r = true;
 							return new ResponseEntity<>(r, HttpStatus.OK);
 						} else {
