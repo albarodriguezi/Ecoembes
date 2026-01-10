@@ -42,7 +42,7 @@ public class DataInitializer {
             PlantGatewayFactory plantGatewayFactory) {
 		return args -> {	
 			
-			//create 2 plants
+			//create 2 plants (Bilbao and Pamplona)
 			Plant p1 = new Plant(1L, "CONT_BILBAO", 28001, "Bilbao", "Calle Gran Vía 45", 300);
 			Plant p2 = new Plant(2L, "PLAS_PAMPLONA", 8001, "Pamplona", "Avenida Carlos III 120", 400);
 			
