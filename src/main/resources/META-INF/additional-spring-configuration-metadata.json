@@ -1,0 +1,20 @@
+{"properties": [
+  {
+    "name": "contsocket.host",
+    "type": "java.lang.String",
+    "description": "Host for ContSocket plants",
+    "sourceType": "application.properties"
+  },
+  {
+    "name": "contsocket.port",
+    "type": "java.lang.Integer",
+    "description": "Port for ContSocket plants",
+    "sourceType": "application.properties"
+  },
+  {
+    "name": "plassb.base.url",
+    "type": "java.lang.String",
+    "description": "Base URL for PlasSB HTTP gateway",
+    "sourceType": "application.properties"
+  }
+]}

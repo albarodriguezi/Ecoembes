@@ -1,0 +1,12 @@
+# Ignorar toda la carpeta de Gradle (incluyendo todos los .lock y versiones)
+.gradle/
+
+# Otros archivos necesarios para ignorar en proyectos Java/Spring
+build/
+bin/
+.settings/
+.project
+.classpath
+.metadata/
+target/
+*.log

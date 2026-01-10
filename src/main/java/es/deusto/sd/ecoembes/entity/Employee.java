@@ -1,0 +1,94 @@
+package es.deusto.sd.ecoembes.entity;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Version;
+@Entity
+public class Employee {
+
+    @Id
+    private long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
+    private LocalDate date_birth;
+
+    @Column(nullable = false)
+    private double salary;
+
+    @Version
+    private int version; // Control optimista
+
+    public Employee() {}
+
+    public Employee(long id, String name, String email, String password, LocalDate date_birth, double salary) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.date_birth = date_birth;
+        this.salary = salary;
+    }
+
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    // Getters y setters
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    public LocalDate getDate_birth() { return date_birth; }
+    public void setDate_birth(LocalDate date_birth) { this.date_birth = date_birth; }
+
+    public double getSalary() { return salary; }
+    public void setSalary(double salary) { this.salary = salary; }
+
+    public int getVersion() { return version; }
+    public void setVersion(int version) { this.version = version; }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(date_birth, email, id, name, password, salary);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Employee other = (Employee) obj;
+        return id == other.id
+            && Double.doubleToLongBits(salary) == Double.doubleToLongBits(other.salary)
+            && Objects.equals(name, other.name)
+            && Objects.equals(email, other.email)
+            && Objects.equals(password, other.password)
+            && Objects.equals(date_birth, other.date_birth);
+    }
+}
