@@ -43,8 +43,9 @@ public class DataInitializer {
 		return args -> {	
 			
 			//create 2 plants (Bilbao and Pamplona)
-			Plant p1 = new Plant(1L, "CONT_BILBAO", 28001, "Bilbao", "Calle Gran Vía 45", 300);
-			Plant p2 = new Plant(2L, "PLAS_PAMPLONA", 8001, "Pamplona", "Avenida Carlos III 120", 400);
+			// Use constructor that includes explicit type to avoid deriving from name
+			Plant p1 = new Plant(1L, "CONT_BILBAO", "CONT", 28001, "Bilbao", "Calle Gran Vía 45", 300);
+			Plant p2 = new Plant(2L, "PLAS_PAMPLONA", "PLAS", 8001, "Pamplona", "Avenida Carlos III 120", 400);
 			
 			plantService.addPlant(p1);
 			plantService.addPlant(p2);

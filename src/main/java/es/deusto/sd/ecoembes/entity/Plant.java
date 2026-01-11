@@ -14,6 +14,8 @@ public class Plant {
 	private long id;
 	@Column(nullable = false)
 	private String name; // NEW: plant name used by factory/API
+	@Column(nullable = true)
+	private String type; // NEW: explicit gateway/type (e.g., CONT, PLAS) stored in DB
 	@Column(nullable = false)
 	private int PC;
 	@Column(nullable = false)
@@ -25,9 +27,22 @@ public class Plant {
 	
 	public Plant() {}
 	
+	// Backwards-compatible constructor
 	public Plant(long id, String name, int pC, String city, String address, int capacity) {
 		this.id = id;
 		this.name = name;
+		this.type = null;
+		PC = pC;
+		this.city = city;
+		this.address = address;
+		this.capacity = capacity;
+	}
+
+	// New constructor with explicit type
+	public Plant(long id, String name, String type, int pC, String city, String address, int capacity) {
+		this.id = id;
+		this.name = name;
+		this.type = type;
 		PC = pC;
 		this.city = city;
 		this.address = address;
@@ -48,6 +63,14 @@ public class Plant {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public int getPC() {
@@ -84,7 +107,7 @@ public class Plant {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(PC, address, capacity, city, id, name);
+		return Objects.hash(PC, address, capacity, city, id, name, type);
 	}
 	
 	@Override
@@ -97,6 +120,7 @@ public class Plant {
 			return false;
 		Plant other = (Plant) obj;
 		return PC == other.PC && Objects.equals(address, other.address) && capacity == other.capacity
-				&& Objects.equals(city, other.city) && id == other.id && Objects.equals(name, other.name);
+				&& Objects.equals(city, other.city) && id == other.id && Objects.equals(name, other.name)
+				&& Objects.equals(type, other.type);
 	}
 }

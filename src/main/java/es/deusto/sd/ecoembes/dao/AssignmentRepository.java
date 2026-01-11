@@ -17,6 +17,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long>{
 	
 	List<Assignment> findAssignmentsByPlantId(long plantId);
 	
+	List<Assignment> findAssignmentsByPlant_Name(String plantName);
+	
 	List<Assignment> findAssignmentsByEmployee_Id(long employeeId);
 }
-

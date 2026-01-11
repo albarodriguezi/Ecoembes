@@ -3,22 +3,22 @@ package es.deusto.sd.ecoembes.service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import es.deusto.sd.ecoembes.entity.Plant;
 import es.deusto.sd.ecoembes.external.IPlantGateway;
 import es.deusto.sd.ecoembes.external.PlantGatewayFactory;
+import es.deusto.sd.ecoembes.dao.PlantRepository;
 
 @Service
 public class PlantService {
 
     private final AuthService authService;
-    private final JpaRepository<Plant, Long> plantRepositoryJPA;
+    private final PlantRepository plantRepositoryJPA;
     private final PlantGatewayFactory plantGatewayFactory;
 
     public PlantService(AuthService authService,
-                        JpaRepository<Plant, Long> plantRepositoryJPA,
+                        PlantRepository plantRepositoryJPA,
                         PlantGatewayFactory plantGatewayFactory) {
         this.authService = authService;
         this.plantRepositoryJPA = plantRepositoryJPA;
@@ -38,6 +38,7 @@ public class PlantService {
     // Buscar planta por nombre
     public Plant getPlantByName(String name) {
         if (name == null) return null;
+        // Use repository.findAll() and stream to remain compatible with current PlantRepository
         return plantRepositoryJPA.findAll()
                 .stream()
                 .filter(p -> name.equals(p.getName()))
@@ -45,22 +46,29 @@ public class PlantService {
                 .orElse(null);
     }
 
-    // ======= CAPACITY POR NOMBRE, PERO GATEWAY POR ID =======
+    // ======= CAPACITY: use per-plant gateway (factory returns a gateway bound to the plant) =======
 
     public int checkPlantCapacity(String token, String plantName, LocalDate date) {
         try {
             Plant plant = getPlantByName(plantName);
-            if (plant == null) return -1;
+            if (plant == null) {
+                System.out.println("PlantService: plant not found by name='" + plantName + "'");
+                return -1;
+            }
 
-            // Gateway según nombre (PLAS_PAMPLONA -> PlasSB, etc.)
+            System.out.println("PlantService: checking capacity for plant='" + plantName + "' id=" + plant.getId());
+
+            // Gateway bound to the plant (factory selects and constructs it)
             IPlantGateway plantGateway = plantGatewayFactory.createByPlantName(plantName);
+
+            System.out.println("PlantService: using gateway=" + plantGateway.getClass().getSimpleName() + " for plant='" + plantName + "'");
 
             String formattedDate = date.format(DateTimeFormatter.ofPattern("ddMMyyyy"));
 
-            // Aquí usamos el ID numérico que espera PlasSB en /plants/{id}/capacities
-            String remoteId = String.valueOf(plant.getId());
-
-            return plantGateway.getCapacity(remoteId, formattedDate);
+            // Call the per-plant gateway method
+            int cap = plantGateway.getCapacity(formattedDate);
+            System.out.println("PlantService: capacity for plant='" + plantName + "' date=" + formattedDate + " -> " + cap);
+            return cap;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,7 +76,7 @@ public class PlantService {
         }
     }
 
-    // ======= NOTIFY POR NOMBRE, PERO GATEWAY POR ID =======
+    // ======= NOTIFY: per-plant gateway handles notification without needing plantName param =======
 
     public String notifyAssignment(long dumpster, int containers, String plantName) {
         try {
@@ -77,10 +85,10 @@ public class PlantService {
 
             IPlantGateway plantGateway = plantGatewayFactory.createByPlantName(plantName);
 
-            // Otra vez, ID numérico para PlasSB
-            String remoteId = String.valueOf(plant.getId());
+            System.out.println("PlantService: notifying assignment to plant='" + plantName + "' via gateway=" + plantGateway.getClass().getSimpleName());
 
-            return plantGateway.notifyAssignment(remoteId, dumpster, containers);
+            // Call per-plant gateway notify
+            return plantGateway.notifyAssignment(dumpster, containers);
 
         } catch (Exception e) {
             e.printStackTrace();
