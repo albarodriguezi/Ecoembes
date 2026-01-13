@@ -112,6 +112,7 @@ public class DumpsterService {
 			dumpster.setStatus("GREEN");
 		}
         
+		dumpsterRepositoryJPA.save(dumpster);
         return dumpster;
 
         
@@ -144,4 +145,10 @@ public class DumpsterService {
 				e.printStackTrace();
 			}
     }
+
+
+	public List<Dumpster> getAll() {
+		return dumpsterRepositoryJPA.findAll();
+		
+	}
 }

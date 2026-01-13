@@ -10,21 +10,22 @@ public class PlasSBGateway implements IPlantGateway {
 
     private final String baseUrl;
     private final HttpClient client;
-    private final long remoteId; // numeric id used by PlasSB HTTP API
+
 
     // Constructor accepts base URL and remote numeric id for the plant
-    public PlasSBGateway(String baseUrl, long remoteId) {
+    public PlasSBGateway(String baseUrl) {
         this.baseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
         this.client = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(5))
                 .build();
-        this.remoteId = remoteId;
+
     }
 
     @Override
     public int getCapacity(String date) throws Exception {
         try {
-            String url = baseUrl + "plants/" + remoteId + "/capacities?date=" + date;
+            String url = baseUrl + "plants/capacities?date=" + date;
+            System.out.println("PlasSBGateway: GET " + url);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .GET()
@@ -53,7 +54,7 @@ public class PlasSBGateway implements IPlantGateway {
     @Override
     public String notifyAssignment(long dumpster, int containers) throws Exception {
         try {
-            String url = baseUrl + "plants/" + remoteId + "/capacity?processed=" + containers;
+            String url = baseUrl + "plants/updates?dumpster="+dumpster+"&processed=" + containers;
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))

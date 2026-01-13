@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.deusto.sd.ecoembes.dto.DumpsterDTO;
 import es.deusto.sd.ecoembes.dto.PlantCapacityDTO;
+import es.deusto.sd.ecoembes.dto.PlantDTO;
 import es.deusto.sd.ecoembes.dto.StatusDTO;
 import es.deusto.sd.ecoembes.dto.UsageDTO;
 import es.deusto.sd.ecoembes.entity.Dumpster;
@@ -204,6 +206,43 @@ public class EmployeeController {
 	}
 
 
+	@Operation(
+			summary = "Get all dumpsters",
+			//description = "Allow an employee to crate a dumpster by providing its location and capacity.",
+			responses = {
+					@ApiResponse(responseCode = "204", description = "No Content: dumpster created successfully"),
+					@ApiResponse(responseCode = "400", description = "Bad Request: Error in the request parameters"),
+					@ApiResponse(responseCode = "401", description = "Unauthorized: Employee not authenticated"),
+					@ApiResponse(responseCode = "404", description = "Not Found: Dumpster not found"),
+					@ApiResponse(responseCode = "409", description = "Conflict: Conflict with the current state of the resource"),
+					@ApiResponse(responseCode = "500", description = "Internal server error")
+			}
+			)		
+	@GetMapping("/dumpsters/retrievals")
+	public ResponseEntity<List<DumpsterDTO>> createDumpster(
+			@RequestParam("token") String token)
+ {
+		try {
+			Employee user = authService.getUserByToken(token);
+			if (user == null) {
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			}
+
+			List<Dumpster> dumpsters =dumpsterService.getAll();
+			List<DumpsterDTO> dumpsterDTOs = dumpsters.stream()
+			        .map(d -> DumpsterToDTO(
+			                d.getId(),
+			                d.getContainers(),
+			                d.getStatus(),
+			                d.getPC()
+			        ))
+			        .collect(Collectors.toList());
+
+			return new ResponseEntity<>(dumpsterDTOs, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	// GET details of an article by ID
 	@Operation(
@@ -315,6 +354,40 @@ public class EmployeeController {
 	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	}
+	
+	
+	@Operation(
+	        summary = "Get the capacity of a plant by its name",
+	        responses = {
+	                @ApiResponse(responseCode = "200", description = "OK: Capacity retrieved successfully"),
+	                @ApiResponse(responseCode = "400", description = "Bad Request: Error in the request parameters"),
+	                @ApiResponse(responseCode = "404", description = "Not Found: Plant not found or no capacity available"),
+	                @ApiResponse(responseCode = "500", description = "Internal server error")
+	        }
+	)
+	@GetMapping("/plants/retrievals")
+	public ResponseEntity<List<PlantDTO>> getAllPlants(
+	        @Parameter(name = "token", description = "Authorization token in plain text", required = true)
+	        @RequestParam("token") String token) {
+
+	    try {
+	        List<Plant> plants = plantService.getAll();
+	        if (plants != null && !plants.isEmpty()) {
+	        		            List<PlantDTO> dumpsterDTOs = plants.stream()
+	                    .map(p -> PlantToDTO(
+	                            p.getId(),
+	                            p.getName(),
+	                            p.getPC()
+	                    ))
+	                    .collect(Collectors.toList());
+	            return new ResponseEntity<>(dumpsterDTOs, HttpStatus.OK);
+	        } else {
+	            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	        }
+	    } catch (Exception e) {
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
 
 
 
@@ -342,10 +415,11 @@ public class EmployeeController {
 	        int capacity   = plantService.checkPlantCapacity(token, plantName, LocalDate.now());
 
 	        if (capacity >= containers) {
-	            plantService.updatePlant(plantName, containers);
+	            //plantService.updatePlant(plantName, containers);
 	            Plant plant = plantService.getPlantByName(plantName);
 	            dumpsterService.assignDumpsterPlant(plant, id, token);
 	            plantService.notifyAssignment(id, containers, plantName);
+	            dumpsterService.updateDumpster(id, 0, token); // Empty the dumpster after assignment
 	            return new ResponseEntity<>(true, HttpStatus.OK);
 	        } else {
 	            return new ResponseEntity<>(false, HttpStatus.OK);
@@ -383,15 +457,15 @@ public class EmployeeController {
 		Dumpster dumpster = dumpsterService.updateDumpster(id, containers,token);
 
 		if (dumpster != null) {				
-			DumpsterDTO dto = DumpsterToDTO(id,containers,dumpster.getStatus());
+			DumpsterDTO dto = DumpsterToDTO(id,containers,dumpster.getStatus(),dumpster.getPC());
 			return new ResponseEntity<>(dto, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 
-	private DumpsterDTO DumpsterToDTO(long id, int containers,String status) {
-		return new DumpsterDTO(id,containers,status);
+	private DumpsterDTO DumpsterToDTO(long id, int containers,String status,int pc) {
+		return new DumpsterDTO(id,containers,status,pc);
 	}
 	private UsageDTO UsageToDTO(List<Registry> usage,long id) {
 		return new UsageDTO(usage,id);
@@ -404,6 +478,11 @@ public class EmployeeController {
 	private PlantCapacityDTO PlantCapacityToDTO(String id,int capacity) {
 
 		return new PlantCapacityDTO(id,capacity);
+	}
+	
+	private PlantDTO PlantToDTO(long id,String name,int pc) {
+
+		return new PlantDTO(id,name,pc);
 	}
 
 

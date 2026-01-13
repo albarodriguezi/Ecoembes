@@ -58,10 +58,10 @@ public class PlantGatewayFactory {
                 gw = new ContSocketGateway(contSocketHost, contSocketPort, plant.getName());
             } else if ("PLAS".equalsIgnoreCase(type) || "HTTP".equalsIgnoreCase(type)) {
                 // pass remote numeric id expected by PlasSB HTTP API
-                gw = new PlasSBGateway(baseUrl, plant.getId());
+                gw = new PlasSBGateway(baseUrl);
             } else {
                 // default to HTTP gateway
-                gw = new PlasSBGateway(baseUrl, plant.getId());
+                gw = new PlasSBGateway(baseUrl);
             }
             System.out.println("PlantGatewayFactory: created gateway instance " + gw.getClass().getSimpleName() + " for plant='" + plantName + "'");
             return gw;

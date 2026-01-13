@@ -2,6 +2,7 @@ package es.deusto.sd.ecoembes.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,10 @@ public class PlantService {
 
     public Plant getPlantById(long plantId) {
         return plantRepositoryJPA.findById(plantId).orElse(null);
+    }
+    
+    public List<Plant> getAll() {
+        return plantRepositoryJPA.findAll();
     }
 
     // Buscar planta por nombre
@@ -86,7 +91,7 @@ public class PlantService {
             IPlantGateway plantGateway = plantGatewayFactory.createByPlantName(plantName);
 
             System.out.println("PlantService: notifying assignment to plant='" + plantName + "' via gateway=" + plantGateway.getClass().getSimpleName());
-
+            System.out.println("PlantService: dumpster=" + dumpster + ", containers=" + containers);
             // Call per-plant gateway notify
             return plantGateway.notifyAssignment(dumpster, containers);
 
