@@ -132,7 +132,7 @@ public class DumpsterService {
     	Dumpster dumpster = dumpsterRepositoryJPA.findById(d_id).orElse(null);
         Assignment assignment = new Assignment(employee,dumpster, plant);
 		assignmentRepository.save(assignment);
-		
+		updateDumpster(d_id,0,token); // Reset containers to 0 upon assignment
 		System.out.println("Assigned dumpster ID " + d_id + " to plant ID " + plant + " by employee " + employee.getEmail());
     }
 

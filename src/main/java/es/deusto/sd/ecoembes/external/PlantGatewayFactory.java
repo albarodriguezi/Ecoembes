@@ -53,10 +53,10 @@ public class PlantGatewayFactory {
         final String key = plantName; // one gateway per plant
         return gatewayCache.computeIfAbsent(key, name -> {
             IPlantGateway gw;
-            if ("CONT".equalsIgnoreCase(type)) {
+            if ("CONT_BILBAO".equalsIgnoreCase(type)) {
                 // pass plantName so socket server can identify which plant
                 gw = new ContSocketGateway(contSocketHost, contSocketPort, plant.getName());
-            } else if ("PLAS".equalsIgnoreCase(type) || "HTTP".equalsIgnoreCase(type)) {
+            } else if ("PLAS_PAMPLONA".equalsIgnoreCase(type)) {
                 // pass remote numeric id expected by PlasSB HTTP API
                 gw = new PlasSBGateway(baseUrl);
             } else {

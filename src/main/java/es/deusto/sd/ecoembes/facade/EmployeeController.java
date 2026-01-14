@@ -419,7 +419,6 @@ public class EmployeeController {
 	            Plant plant = plantService.getPlantByName(plantName);
 	            dumpsterService.assignDumpsterPlant(plant, id, token);
 	            plantService.notifyAssignment(id, containers, plantName);
-	            dumpsterService.updateDumpster(id, 0, token); // Empty the dumpster after assignment
 	            return new ResponseEntity<>(true, HttpStatus.OK);
 	        } else {
 	            return new ResponseEntity<>(false, HttpStatus.OK);
